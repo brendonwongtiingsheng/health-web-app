@@ -1,0 +1,280 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden; /* 外层不滚，里面滚 */
+}
+
+.page {
+  height: 100vh;              /* ✅ 不用 min-height */
+  overflow-y: auto;           /* ✅ 开启上下滚动 */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  background: #f6f7f9;
+  font-family: "ManulifeJHSansOptimized", system-ui, -apple-system,
+    "Segoe UI", Roboto, Arial, sans-serif !important;
+  touch-action: pan-y;
+}
+
+/* Topbar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #eceef2;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #111827;
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  background: #f2f3f5;
+}
+
+.spacer { flex: 1; }
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 0;
+  background: #ffcc00;
+  color: #111827;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,.12);
+}
+
+/* Banner */
+.banner img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hero */
+.hero {
+  background: #10a44b; /* 绿色 */
+  color: #ffffff;
+  padding: 18px 16px 22px;
+}
+
+.hero h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: .95;
+  max-width: 520px;
+}
+
+/* Cards */
+.cards {
+  padding: 14px 12px 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 14px;
+  display: grid;
+  grid-template-columns: 56px 1fr 40px;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.08);
+  cursor: pointer;
+  outline: none;
+}
+
+.card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35), 0 8px 18px rgba(17, 24, 39, 0.08);
+}
+
+.card-left {
+  display: grid;
+  place-items: center;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 让卡片变成上下结构 */
+.cards-vertical {
+  display: grid;
+  gap: 14px;
+}
+
+.card-vertical {
+  position: relative;
+  display: block;        /* 不用原本的三栏 grid */
+  padding: 16px;
+}
+
+/* 图片放上面 */
+.card-vertical .card-icon {
+  width: 64px;
+  height: auto;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* 右上角箭头位置固定 */
+.card-vertical .card-right {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* 标题 + 描述排版 */
+.card-vertical .card-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.card-vertical .card-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+/* title row + badge */
+.card-vertical .card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.arrow-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid #ff5a3c;
+  color: #ff5a3c;
+  display: grid;
+  place-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ef4444;
+}
+
+.testimonials {
+  padding: 6px 12px 24px;
+}
+
+.section-title {
+  margin: 10px 4px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.video-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e5e7eb;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.08);
+  cursor: pointer;
+}
+
+.video-thumb {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.play-btn {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.play-btn::before {
+  content: "";
+  width: 54px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+  position: absolute;
+}
+
+.play-btn svg {
+  position: relative;
+  color: #16a34a; /* 绿色播放按钮 */
+}
+
+
+/* 小屏更像手机 */
+@media (max-width: 420px) {
+  .banner img { height: 150px; }
+  .card { grid-template-columns: 52px 1fr 40px; }
+}
