@@ -5,7 +5,9 @@
     { "source": "/(.*\\.js)", "destination": "/$1" },
     { "source": "/(.*\\.css)", "destination": "/$1" },
     { "source": "/(.*\\.map)", "destination": "/$1" },
-    { "source": "/(.*\\.(png|jpg|jpeg|gif|svg|webp|ico))", "destination": "/$1" },
+
+    { "source": "/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/favicon.ico", "destination": "/favicon.ico" },
 
     { "source": "/(.*)", "destination": "/index.html" }
   ]
