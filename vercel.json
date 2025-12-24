@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/remoteEntry.js", "destination": "/remoteEntry.js" },
+    { "source": "/:match(.*\\.js)", "destination": "/:match" },
+    { "source": "/:match(.*\\.css)", "destination": "/:match" },
+    { "source": "/:match(.*\\.map)", "destination": "/:match" },
+    { "source": "/:match(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.js",
+      "headers": [{ "key": "Content-Type", "value": "application/javascript; charset=utf-8" }]
+    }
+  ]
+}
