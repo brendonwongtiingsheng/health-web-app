@@ -9,6 +9,9 @@ module.exports = withModuleFederationPlugin(
       './Module': './src/app/remote-entry/remote-entry.module.ts',
     },
 
+    // ✅ 关键：classic MF container（Android WebView 友好）
+    library: { type: 'var', name: 'healthWebApp' },
+
     shared: share({
       '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
       '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
