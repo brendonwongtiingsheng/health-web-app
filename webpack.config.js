@@ -12,7 +12,7 @@ shared: {
   '@angular/core':   { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
   '@angular/common': { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
   '@angular/router': { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
-  'rxjs':            { singleton: true, strictVersion: true, requiredVersion: '7.8.0' },
+  'rxjs':            { singleton: true, strictVersion: true, requiredVersion: '7.8.2' },
 },
 },
 /** extra webpack config (非常重要) **/
