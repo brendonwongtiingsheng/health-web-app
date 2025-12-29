@@ -8,12 +8,12 @@ module.exports = withModuleFederationPlugin({
   },
 
   // ✅ 共享依赖照你项目需要
-  shared: {
-    '@angular/core': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
-    '@angular/common': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
-    '@angular/router': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
-    'rxjs': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
-  },
+shared: {
+  '@angular/core':   { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
+  '@angular/common': { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
+  '@angular/router': { singleton: true, strictVersion: true, requiredVersion: '15.2.10' },
+  'rxjs':            { singleton: true, strictVersion: true, requiredVersion: '7.8.0' },
+},
 },
 /** extra webpack config (非常重要) **/
 {
