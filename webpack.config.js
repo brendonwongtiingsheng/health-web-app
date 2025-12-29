@@ -1,23 +1,27 @@
-const { withModuleFederationPlugin, share } = require('@angular-architects/module-federation/webpack');
+const { withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
-module.exports = withModuleFederationPlugin(
-  {
-    name: 'healthWebApp',
-    filename: 'remoteEntry.js',
-    exposes: {
-      './Module': './src/app/remote-entry/remote-entry.module.ts',
-    },
-    shared: share({
-      '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-      '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-      '@angular/common/http': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-      '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-      rxjs: { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-    }),
+module.exports = withModuleFederationPlugin({
+  name: 'healthWebApp',
+  filename: 'remoteEntry.js',
+  exposes: {
+    './Module': './src/app/remote-entry/remote-entry.module.ts',
   },
-  (config) => {
-    config.output.publicPath = 'https://health-web-app-mu.vercel.app/'; // ✅换成你现在这个新域名
-    config.output.scriptType = 'module'; // 可选，但建议
-    return config;
+
+  // ✅ 共享依赖照你项目需要
+  shared: {
+    '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    rxjs: { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+  },
+},
+/** extra webpack config (非常重要) **/
+{
+  output: {
+    publicPath: 'auto',        // ✅ 让 remote 自己决定从哪里加载 chunk（Vercel 必备）
+    uniqueName: 'healthWebApp'
+  },
+  experiments: {
+    outputModule: true         // ✅ type: 'module' 必须
   }
-);
+});
