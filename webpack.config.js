@@ -16,12 +16,8 @@ module.exports = withModuleFederationPlugin(
     }),
   },
   (config) => {
-    // ✅ 关键：不要 auto，用明确的 remote 域名
-    config.output.publicPath = 'https://health-web-app-7r4x.vercel.app/';
-
-    // 可选：更明确告诉 webpack 这是 module script（有些环境更稳）
-    config.output.scriptType = 'module';
-
+    config.output.publicPath = 'https://health-web-app-mu.vercel.app/'; // ✅换成你现在这个新域名
+    config.output.scriptType = 'module'; // 可选，但建议
     return config;
   }
 );
