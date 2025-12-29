@@ -12,7 +12,7 @@ module.exports = withModuleFederationPlugin({
     '@angular/core': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
     '@angular/common': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
     '@angular/router': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
-    rxjs: { singleton: true, strictVersion: false, requiredVersion: 'auto' },
+    'rxjs': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
   },
 },
 /** extra webpack config (非常重要) **/
