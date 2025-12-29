@@ -3,32 +3,35 @@
     {
       "source": "/remoteEntry.js",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "cross-origin" },
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     },
     {
       "source": "/(.*)\\.js",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "cross-origin" },
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "cross-origin" },
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     }
   ],
   "rewrites": [
     { "source": "/remoteEntry.js", "destination": "/remoteEntry.js" },
-
     { "source": "/(.*\\.js)", "destination": "/$1" },
     { "source": "/(.*\\.css)", "destination": "/$1" },
     { "source": "/(.*\\.map)", "destination": "/$1" },
-
     { "source": "/assets/(.*)", "destination": "/assets/$1" },
     { "source": "/favicon.ico", "destination": "/favicon.ico" },
-
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
