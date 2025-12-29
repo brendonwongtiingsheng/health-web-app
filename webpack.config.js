@@ -4,11 +4,9 @@ module.exports = withModuleFederationPlugin(
   {
     name: 'healthWebApp',
     filename: 'remoteEntry.js',
-
     exposes: {
       './Module': './src/app/remote-entry/remote-entry.module.ts',
     },
-
     shared: share({
       '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
       '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
@@ -18,23 +16,11 @@ module.exports = withModuleFederationPlugin(
     }),
   },
   (config) => {
-    // ✅ 关键：强制 classic script container（不要 import.meta）
-    config.output ||= {};
-    config.output.library = { type: 'var', name: 'healthWebApp' };
-    config.output.scriptType = 'text/javascript';
+    // ✅ 关键：不要 auto，用明确的 remote 域名
+    config.output.publicPath = 'https://health-web-app-7r4x.vercel.app/';
 
-    // ✅ 关键：确保不是 ESM output
-    config.experiments ||= {};
-    config.experiments.outputModule = false;
-    config.output.module = false;
-
-    // 你的 asset rule 保留
-    config.module ||= {};
-    config.module.rules ||= [];
-    config.module.rules.push({
-      test: /\.(png|jpe?g|gif|svg|webp)$/i,
-      type: 'asset/resource',
-    });
+    // 可选：更明确告诉 webpack 这是 module script（有些环境更稳）
+    config.output.scriptType = 'module';
 
     return config;
   }
