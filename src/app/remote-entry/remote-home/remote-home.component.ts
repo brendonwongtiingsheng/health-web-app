@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
   
 })
 export class RemoteHomeComponent {
-  private origin = 'http://10.8.0.2:4201'; // ✅ http://你的IP:4201 或你的 remote 域名
+  // 自动检测当前域名，适用于本地开发和生产环境
+  private origin = window.location.origin;
 
   bannerUrl = `${this.origin}/assets/banner-claims.png`;
   submitUrl = `${this.origin}/assets/submit-claim.png`;
