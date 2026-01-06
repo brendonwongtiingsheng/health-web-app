@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
   
 })
 export class RemoteHomeComponent {
-  // 自动检测当前域名，适用于本地开发和生产环境
-  private origin = window.location.origin;
+  // 直接使用Vercel URL确保图片能正确加载
+  private origin = 'https://health-web-app-git-master-brendonwongtiingshengs-projects.vercel.app';
 
   bannerUrl = `${this.origin}/assets/banner-claims.png`;
   submitUrl = `${this.origin}/assets/submit-claim.png`;
