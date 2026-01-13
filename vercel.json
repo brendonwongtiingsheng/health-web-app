@@ -23,6 +23,10 @@
     {
       "source": "/api/terms-conditions",
       "destination": "/api/terms-conditions.js"
+    },
+    {
+      "source": "/api/test",
+      "destination": "/api/test.js"
     }
   ]
 }

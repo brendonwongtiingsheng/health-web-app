@@ -83,6 +83,15 @@ export class TermsConditionsService {
   private processApiResponse(response: any, locale: string): TermsConditions {
     console.log('📦 Raw API response:', response);
     
+    // 检查是否是Vercel API的错误响应
+    if (response?.error) {
+      console.log('⚠️ Vercel API returned error:', response.error);
+      return {
+        content: this.getDefaultTermsContent(),
+        locale: locale
+      };
+    }
+    
     // 解析API响应的数据结构
     if (response?.data?.termConditionList?.items && response.data.termConditionList.items.length > 0) {
       // 提取所有条款项目的HTML内容
