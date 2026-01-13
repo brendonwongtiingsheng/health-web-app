@@ -18,5 +18,11 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/terms-conditions",
+      "destination": "/api/terms-conditions.js"
+    }
   ]
 }
