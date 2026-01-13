@@ -19,7 +19,7 @@ export class TermsConditionsService {
     const isProduction = window.location.hostname !== 'localhost';
     
     if (isProduction) {
-      // 在生产环境使用Vercel API路由
+      // 在生产环境先尝试Vercel API路由，如果失败再尝试直接调用
       this.apiUrl = '/api/terms-conditions';
     } else {
       // 在开发环境使用代理
@@ -48,8 +48,8 @@ export class TermsConditionsService {
         
         // 在生产环境如果Vercel API失败，尝试直接调用
         const isProduction = window.location.hostname !== 'localhost';
-        if (isProduction && error.status === 404) {
-          console.log('🔄 Vercel API not found, trying direct call...');
+        if (isProduction) {
+          console.log('🔄 Vercel API failed, trying direct call...');
           return this.tryDirectCall(locale);
         }
         
@@ -71,6 +71,19 @@ export class TermsConditionsService {
       map(response => this.processApiResponse(response, locale)),
       catchError((error: HttpErrorResponse) => {
         console.error('🚨 Direct API call also failed:', error);
+        console.log('🔄 Trying static file fallback...');
+        return this.tryStaticFile(locale);
+      })
+    );
+  }
+
+  private tryStaticFile(locale: string): Observable<TermsConditions> {
+    console.log('📁 Loading terms from static file...');
+    
+    return this.http.get<any>('/assets/terms-conditions.json').pipe(
+      map(response => this.processApiResponse(response, locale)),
+      catchError((error: HttpErrorResponse) => {
+        console.error('🚨 Static file also failed:', error);
         console.log('🔄 Using default content');
         return of({
           content: this.getDefaultTermsContent(),

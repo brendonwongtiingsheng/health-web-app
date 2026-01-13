@@ -19,9 +19,17 @@ export default async function handler(req, res) {
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (compatible; Vercel-API/1.0)',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Referer': 'https://preprod-ap.manulife.com.kh/',
+        'Origin': 'https://preprod-ap.manulife.com.kh',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
       },
     });
 
@@ -34,6 +42,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         error: 'External API failed',
         status: response.status,
+        statusText: response.statusText,
         data: null
       });
     }
