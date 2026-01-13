@@ -18,8 +18,8 @@ export class RemoteHomeComponent {
   constructor(private router: Router) {}
 
   goBack() { this.router.navigateByUrl('/home'); }
-  onSubmitClaim() { this.router.navigateByUrl('/claims/terms-conditions'); }
-  onViewClaims() { this.router.navigateByUrl('/claims/list'); }
+  onSubmitClaim() { this.router.navigateByUrl('/terms-conditions'); }
+  onViewClaims() { this.router.navigateByUrl('/list'); }
 
   onOpenTestimonials() {
   // 你可以换成实际路由 or 外链

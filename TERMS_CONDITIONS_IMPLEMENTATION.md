@@ -1,76 +1,77 @@
-# 条款和条件功能实现
+# 条款和条件功能实现 - Module Federation版本
 
-## 功能概述
+## 问题修复
 
-实现了在用户点击"Submit a Claim"后显示条款和条件页面的功能，用户需要滚动到底部才能继续提交理赔申请。
+修复了Module Federation项目中的路由配置问题：
 
-## 实现的功能
+### 1. 主要问题
+- 原始路由配置使用了绝对路径 `/claims/terms-conditions`
+- 在Module Federation环境中，remote应用需要使用相对路径
+- 主应用路由配置需要正确加载remote模块
 
-### 1. 条款和条件服务 (`TermsConditionsService`)
-- 调用API获取条款和条件内容
-- API地址: `https://preprod-ap.manulife.com.kh/graphql/execute.json/insurance/getKHTermConditionsByLocale?locale=en`
-- 支持多语言（通过locale参数）
-- 包含错误处理和默认内容
+### 2. 修复内容
 
-### 2. 条款和条件组件 (`TermsConditionsComponent`)
-- 显示从API获取的条款和条件内容
-- 滚动检测功能 - 用户必须滚动到底部
-- 滚动指示器提示用户需要滚动
-- 只有滚动到底部后才能点击"Continue"按钮
-- 响应式设计，适配移动端
+#### 路由配置修复
+- **app-routing.module.ts**: 配置为直接加载remote-entry模块
+- **remote-entry.module.ts**: 使用相对路径配置子路由
+- **组件导航**: 所有导航都改为相对路径
 
-### 3. 提交理赔表单组件 (`SubmitClaimFormComponent`)
-- 用户确认条款后跳转到的实际提交页面
-- 包含基本的表单字段（政策号码、理赔类型、描述、文档上传）
-- 可以根据实际需求进一步定制
-
-## 用户流程
-
-1. 用户在主页点击"Submit a Claim"
-2. 跳转到条款和条件页面 (`/claims/terms-conditions`)
-3. 用户阅读条款并滚动到底部
-4. 滚动到底部后，"Continue"按钮变为可用状态
-5. 点击"Continue"跳转到实际的提交表单页面 (`/claims/submit-form`)
-
-## 路由配置
-
+#### 路径变更
 ```typescript
-const routes: Routes = [
-  { path: '', component: RemoteHomeComponent },
-  { path: 'terms-conditions', component: TermsConditionsComponent },
-  { path: 'submit-form', component: SubmitClaimFormComponent },
-];
+// 修复前
+onSubmitClaim() { this.router.navigateByUrl('/claims/terms-conditions'); }
+
+// 修复后  
+onSubmitClaim() { this.router.navigateByUrl('/terms-conditions'); }
 ```
 
-## API集成
+### 3. 当前用户流程
 
-服务会自动调用您提供的API：
+1. **点击"Submit a Claim"** → 导航到 `/terms-conditions`
+2. **阅读条款和条件** → 用户滚动到底部
+3. **点击"Confirm"** → 导航到 `/submit-form`
+4. **填写并提交表单** → 完成提交并返回主页
+
+### 4. Module Federation配置
+
+项目配置为remote应用：
+- **name**: 'healthWebApp'
+- **filename**: 'remoteEntry.js'
+- **exposes**: './Module' → remote-entry.module.ts
+
+### 5. 运行方式
+
+作为standalone应用：
+```bash
+npm start
+```
+
+作为remote模块（被host应用加载）：
+```bash
+npm run run:all
+```
+
+### 6. API集成
+
+条款和条件内容从以下API获取：
 ```
 GET https://preprod-ap.manulife.com.kh/graphql/execute.json/insurance/getKHTermConditionsByLocale?locale=en
 ```
 
-如果API调用失败，会显示默认的条款和条件内容。
+### 7. 错误处理
 
-## 样式特点
+- 如果API调用失败，显示默认条款内容
+- 包含加载状态和错误提示
+- 路由错误会回退到主页
 
-- 现代化的移动端优先设计
-- 平滑的滚动动画和过渡效果
-- 清晰的视觉反馈（滚动指示器、按钮状态变化）
-- 符合无障碍访问标准
+## 测试
 
-## 自定义选项
-
-### 修改API地址
-在 `src/app/services/terms-conditions.service.ts` 中修改 `apiUrl`
-
-### 修改默认内容
-在 `TermsConditionsComponent` 的 `getDefaultTermsContent()` 方法中修改
-
-### 调整样式
-修改对应的 `.scss` 文件来自定义外观
+1. 启动应用: `npm start`
+2. 访问: `http://localhost:4200`
+3. 点击"Submit a Claim"测试流程
 
 ## 注意事项
 
-- 确保应用已包含 `HttpClientModule` 用于API调用
-- 条款和条件内容支持HTML格式
-- 滚动检测有10px的容错范围，确保在不同设备上都能正常工作
+- 确保host应用正确配置了这个remote模块
+- 路由路径都是相对于remote模块的根路径
+- CORS已在webpack配置中启用

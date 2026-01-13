@@ -11,12 +11,12 @@ export class SubmitClaimFormComponent {
   constructor(private router: Router) {}
 
   goBack() {
-    this.router.navigateByUrl('/claims');
+    this.router.navigateByUrl('/');
   }
 
   onSubmit() {
-    // 这里实现实际的提交逻辑
+    // 最终提交逻辑
     alert('Claim submitted successfully!');
-    this.router.navigateByUrl('/claims');
+    this.router.navigateByUrl('/');
   }
 }

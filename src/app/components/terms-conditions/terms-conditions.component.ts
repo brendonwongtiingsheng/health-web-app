@@ -48,13 +48,13 @@ export class TermsConditionsComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigateByUrl('/claims');
+    this.router.navigateByUrl('/');
   }
 
   onConfirm() {
     if (this.canProceed) {
       // 导航到实际的提交理赔页面
-      this.router.navigateByUrl('/claims/submit-form');
+      this.router.navigateByUrl('/submit-form');
     }
   }
 
