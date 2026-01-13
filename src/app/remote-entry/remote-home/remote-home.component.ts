@@ -18,7 +18,7 @@ export class RemoteHomeComponent {
   constructor(private router: Router) {}
 
   goBack() { this.router.navigateByUrl('/home'); }
-  onSubmitClaim() { this.router.navigateByUrl('/claims/submit'); }
+  onSubmitClaim() { this.router.navigateByUrl('/claims/terms-conditions'); }
   onViewClaims() { this.router.navigateByUrl('/claims/list'); }
 
   onOpenTestimonials() {

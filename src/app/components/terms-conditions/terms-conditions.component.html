@@ -1,0 +1,44 @@
+<div class="terms-page">
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" (click)="goBack()" aria-label="Back">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <h1 class="header-title">Terms and conditions</h1>
+  </header>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading terms and conditions...</p>
+  </div>
+
+  <!-- Terms content -->
+  <div *ngIf="!isLoading" class="content-container">
+    <div class="terms-content" (scroll)="onScroll($event)" [innerHTML]="termsContent">
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator" [class.hidden]="isScrolledToBottom">
+      <p>Scroll to confirm</p>
+      <div class="scroll-arrow">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M7 13l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Confirm button -->
+    <div class="button-container">
+      <button 
+        class="confirm-btn" 
+        [disabled]="!canProceed"
+        [class.enabled]="canProceed"
+        (click)="onConfirm()">
+        {{ canProceed ? 'Continue' : 'Scroll to confirm' }}
+      </button>
+    </div>
+  </div>
+</div>

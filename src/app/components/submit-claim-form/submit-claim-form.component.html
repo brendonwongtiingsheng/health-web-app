@@ -1,0 +1,55 @@
+<div class="submit-form-page">
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" (click)="goBack()" aria-label="Back">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <h1 class="header-title">Submit a Claim</h1>
+  </header>
+
+  <!-- Form Content -->
+  <div class="form-container">
+    <div class="form-card">
+      <h2>Claim Information</h2>
+      <p class="form-description">Please provide the necessary information to submit your claim.</p>
+      
+      <!-- 这里可以添加实际的表单字段 -->
+      <div class="form-group">
+        <label>Policy Number</label>
+        <input type="text" placeholder="Enter your policy number">
+      </div>
+
+      <div class="form-group">
+        <label>Claim Type</label>
+        <select>
+          <option value="">Select claim type</option>
+          <option value="medical">Medical</option>
+          <option value="accident">Accident</option>
+          <option value="life">Life Insurance</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea placeholder="Describe your claim" rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Supporting Documents</label>
+        <div class="file-upload">
+          <input type="file" multiple>
+          <p>Upload relevant documents (PDF, JPG, PNG)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="button-container">
+      <button class="submit-btn" (click)="onSubmit()">
+        Submit Claim
+      </button>
+    </div>
+  </div>
+</div>
