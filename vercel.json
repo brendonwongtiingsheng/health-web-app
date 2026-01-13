@@ -27,6 +27,10 @@
     {
       "source": "/api/test",
       "destination": "/api/test.js"
+    },
+    {
+      "source": "/api/test-external-api",
+      "destination": "/api/test-external-api.js"
     }
   ]
 }
