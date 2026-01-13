@@ -1,0 +1,15 @@
+{
+  "/api/*": {
+    "target": "https://preprod-ap.manulife.com.kh",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    }
+  }
+}

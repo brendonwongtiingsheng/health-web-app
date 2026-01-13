@@ -84,6 +84,8 @@
   margin: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 200px); /* 确保有固定的最大高度 */
+  min-height: 300px; /* 确保有最小高度 */
   
   h2 {
     font-size: 16px;
