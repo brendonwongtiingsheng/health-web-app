@@ -113,7 +113,60 @@ export class SubmitClaimFormComponent {
   onSubmit() {
     // 最终提交逻辑
     alert('Claim submitted successfully!');
+    
+    // 清除Step 2的数据
+    this.clearStep2Data();
+    
+    // 回到homepage
     this.router.navigateByUrl('/');
+  }
+
+  clearStep2Data() {
+    // 清除选中的claim type
+    this.selectedClaimType = '';
+    
+    // 清除所有事件详情数据
+    this.eventDetails = {
+      startDate: '',
+      endDate: '',
+      reason: '',
+      symptoms: ''
+    };
+
+    this.criticalIllnessDetails = {
+      diagnosisDate: '',
+      diagnosis: '',
+      symptoms: ''
+    };
+
+    this.accidentalDisabilityDetails = {
+      accidentDate: '',
+      reason: '',
+      disabilityDetails: '',
+      employmentStatus: '',
+      mainDuties: '',
+      activities: ''
+    };
+
+    this.totalDisabilityDetails = {
+      reason: '',
+      cause: '',
+      accidentDate: '',
+      disabilityStartDate: '',
+      disabilityDetails: '',
+      employmentStatus: '',
+      occupation: '',
+      mainDuties: '',
+      activities: ''
+    };
+
+    this.deathDetails = {
+      dateOfDeath: '',
+      cause: '',
+      diagnosisAccidentDate: '',
+      description: '',
+      symptoms: ''
+    };
   }
 
   openEmploymentStatusModal() {

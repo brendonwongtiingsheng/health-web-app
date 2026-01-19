@@ -10,11 +10,13 @@
   align-items: center;
   padding: 16px 20px;
   background-color: white;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   justify-content: center;
-  position: relative;
+  border-bottom: 1px solid #e9ecef;
 }
 
 
@@ -50,6 +52,7 @@
   padding: 16px 20px;
   border-bottom: 1px solid #e9ecef;
   margin-bottom: 0;
+  margin-top: 56px; /* 为固定的header留出空间 */
 }
 
 .progress-bar {
@@ -128,6 +131,8 @@
   max-height: 2000px;
   opacity: 1;
   padding-bottom: 100px; /* 为固定按钮留出空间 */
+  padding-top: 20px; /* 正常的padding */
+  margin-top: 0; /* 不需要额外的margin，因为progress-container已经有了 */
 
   &.collapsed {
     max-height: 0;
@@ -337,6 +342,8 @@
   .form-container {
     padding: 16px;
     padding-bottom: 100px; /* 为固定按钮留出空间 */
+    padding-top: 16px; /* 正常的padding */
+    margin-top: 0; /* 不需要额外的margin */
   }
 
   .form-section {
@@ -353,6 +360,7 @@
 
   .progress-container {
     padding: 12px 16px;
+    margin-top: 48px; /* 为移动端固定header留出空间 */
   }
 
   .step-text {
