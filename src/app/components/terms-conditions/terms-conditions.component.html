@@ -20,16 +20,6 @@
     <div class="terms-content" (scroll)="onScroll($event)" [innerHTML]="termsContent">
     </div>
 
-    <!-- Scroll indicator -->
-    <div class="scroll-indicator" [class.hidden]="isScrolledToBottom">
-      <p>Scroll to confirm</p>
-      <div class="scroll-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M7 13l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </div>
-
     <!-- Confirm button -->
     <div class="button-container">
       <button 

@@ -17,10 +17,18 @@ export class TermsConditionsService {
   constructor(private http: HttpClient) {
     // 检测是否在生产环境（Vercel）
     const isProduction = window.location.hostname !== 'localhost';
+    const port = window.location.port;
+    
+    // 检测是否被 host 加载（通常 host 运行在 8100，remote 在 4200）
+    const isLoadedByHost = port === '8100';
     
     if (isProduction) {
       // 在生产环境先尝试Vercel API路由，如果失败再尝试直接调用
       this.apiUrl = '/api/terms-conditions';
+    } else if (isLoadedByHost) {
+      // 如果被 host 加载，检查 host 是否有 proxy，如果没有则使用直接 URL
+      // 先尝试使用 host 的 proxy
+      this.apiUrl = '/api/graphql/execute.json/insurance/getKHTermConditionsByLocale';
     } else {
       // 在开发环境使用代理
       this.apiUrl = '/api/graphql/execute.json/insurance/getKHTermConditionsByLocale';
@@ -28,6 +36,7 @@ export class TermsConditionsService {
     
     console.log('🌍 Environment:', isProduction ? 'Production' : 'Development');
     console.log('🔗 API URL:', this.apiUrl);
+    console.log('🏠 Port:', port, 'Loaded by host:', isLoadedByHost);
   }
 
   getTermsConditions(locale: string = 'en'): Observable<TermsConditions> {

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { RemoteHomeComponent } from './remote-home/remote-home.component';
 import { TermsConditionsComponent } from '../components/terms-conditions/terms-conditions.component';
 import { SubmitClaimFormComponent } from '../components/submit-claim-form/submit-claim-form.component';
@@ -22,7 +23,8 @@ const routes: Routes = [
   imports: [
     CommonModule, 
     RouterModule.forChild(routes),
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [TermsConditionsService],
 })
