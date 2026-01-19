@@ -154,4 +154,61 @@ export class SubmitClaimFormComponent {
     const claimType = this.claimTypes.find(type => type.id === this.selectedClaimType);
     return claimType ? claimType.name : '';
   }
+
+  // Methods for Step 3 Review
+  getReasonForDisability(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return this.eventDetails.reason;
+      case 'critical-illness':
+        return this.criticalIllnessDetails.symptoms;
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.reason;
+      case 'total-disability':
+        return this.totalDisabilityDetails.reason;
+      case 'death':
+        return this.deathDetails.description;
+      default:
+        return 'Sharp chest pain that spreads to the arm';
+    }
+  }
+
+  getDisabilityDetails(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return 'I am no';
+      case 'critical-illness':
+        return 'I am no';
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.disabilityDetails || 'I am no';
+      case 'total-disability':
+        return this.totalDisabilityDetails.disabilityDetails || 'I am no';
+      case 'death':
+        return 'I am no';
+      default:
+        return 'I am no';
+    }
+  }
+
+  getEmploymentStatusForReview(): string {
+    switch (this.selectedClaimType) {
+      case 'accidental-partial-disability':
+        return this.getEmploymentStatusDisplay() || 'Unemployed';
+      case 'total-disability':
+        return this.getTotalDisabilityEmploymentStatusDisplay() || 'Unemployed';
+      default:
+        return 'Unemployed';
+    }
+  }
+
+  getMainDutiesForReview(): string {
+    switch (this.selectedClaimType) {
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.mainDuties || 'Sharp chest pain that spreads to the arm';
+      case 'total-disability':
+        return this.totalDisabilityDetails.mainDuties || 'Sharp chest pain that spreads to the arm';
+      default:
+        return 'Sharp chest pain that spreads to the arm';
+    }
+  }
 }

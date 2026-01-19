@@ -613,6 +613,10 @@
 }
 
 // Step 3 Review Styles
+.review-header {
+  margin-bottom: 24px;
+}
+
 .review-section {
   margin-bottom: 32px;
 }
@@ -622,27 +626,50 @@
   font-weight: 600;
   color: #333;
   margin: 20px 0 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.review-grid {
+.edit-btn-small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.review-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 20px;
   margin-bottom: 16px;
 }
 
-.review-item {
+.review-info-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
 
-.review-item-full {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 16px;
-  grid-column: 1 / -1;
+  &.full-width {
+    grid-column: 1 / -1;
+    margin-bottom: 16px;
+  }
 }
 
 .review-label {
@@ -657,11 +684,21 @@
   font-weight: 400;
 }
 
-.documents-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.review-payment-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.review-subsection-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.documents-section {
+  margin-top: 16px;
 }
 
 .document-category {
@@ -669,7 +706,7 @@
 }
 
 .document-category-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #333;
   margin-bottom: 12px;
@@ -711,15 +748,15 @@
 
 // Responsive design for review
 @media (max-width: 768px) {
-  .review-grid {
+  .review-info-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
   
-  .documents-header {
+  .review-section-title {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
   }
 }
 
