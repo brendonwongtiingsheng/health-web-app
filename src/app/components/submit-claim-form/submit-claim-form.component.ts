@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   templateUrl: './submit-claim-form.component.html',
   styleUrls: ['./submit-claim-form.component.scss']
 })
-export class SubmitClaimFormComponent {
+export class SubmitClaimFormComponent implements OnInit {
   isInformationExpanded: boolean = true;
   currentStep: number = 1;
   selectedClaimType: string = '';
@@ -107,6 +107,11 @@ export class SubmitClaimFormComponent {
 
   constructor(private router: Router) {}
 
+  ngOnInit() {
+    // 确保每次进入表单时都是干净的状态
+    this.resetAllData();
+  }
+
   toggleInformation() {
     this.isInformationExpanded = !this.isInformationExpanded;
   }
@@ -158,21 +163,50 @@ export class SubmitClaimFormComponent {
     // 最终提交逻辑
     alert('Claim submitted successfully!');
     
-    // 清除Step 2的数据
-    this.clearStep2Data();
+    // 清除所有数据并重置表单
+    this.resetAllData();
     
     // 回到homepage
     this.router.navigateByUrl('/');
   }
 
-  clearStep2Data() {
-    // 清除选中的claim type
+  resetAllData() {
+    // 重置步骤和状态
+    this.currentStep = 1;
+    this.isInformationExpanded = true;
     this.selectedClaimType = '';
+    
+    // 关闭所有模态框
+    this.showEmploymentStatusModal = false;
+    this.showContactEditModal = false;
+    this.showBankEditModal = false;
     
     // 清除上传的文件
     this.uploadedFiles = {
       'proof-total-disability': [],
       'proof-relationship': []
+    };
+    
+    // 重置用户信息到默认值
+    this.userInfo = {
+      claimFor: 'someone-else',
+      insuredName: 'Sok Akra',
+      contactNumber: '092 124 1234'
+    };
+    
+    // 重置银行信息到默认值
+    this.paymentInfo = {
+      bankName: 'Wing',
+      bankAccountNumber: '021 223 235 135',
+      accountHolderName: 'Sok Akra'
+    };
+    
+    // 清除临时编辑数据
+    this.tempContactNumber = '';
+    this.tempPaymentInfo = {
+      bankName: '',
+      bankAccountNumber: '',
+      accountHolderName: ''
     };
     
     // 清除所有事件详情数据
@@ -217,6 +251,11 @@ export class SubmitClaimFormComponent {
       description: '',
       symptoms: ''
     };
+  }
+
+  clearStep2Data() {
+    // 这个方法现在只用于向后兼容，实际使用resetAllData()
+    this.resetAllData();
   }
 
   openEmploymentStatusModal() {
