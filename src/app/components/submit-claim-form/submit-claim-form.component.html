@@ -57,10 +57,10 @@
 
         <div class="form-group">
           <label class="form-label">Contact number</label>
-          <input type="text" class="form-input" value="092 124 1234" readonly>
+          <input type="text" class="form-input" [value]="userInfo.contactNumber" readonly>
         </div>
 
-        <button class="edit-btn">
+        <button class="edit-btn" (click)="openContactEditModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,21 +75,21 @@
           <div class="payment-row">
             <div class="payment-field">
               <label class="payment-label">Bank name</label>
-              <div class="payment-value">Wing</div>
+              <div class="payment-value">{{ paymentInfo.bankName }}</div>
             </div>
             <div class="payment-field">
               <label class="payment-label">Bank account number</label>
-              <div class="payment-value">021 223 235 135</div>
+              <div class="payment-value">{{ paymentInfo.bankAccountNumber }}</div>
             </div>
           </div>
           
           <div class="payment-field">
             <label class="payment-label">CauseHolder's name of event</label>
-            <div class="payment-value">Sok Akra</div>
+            <div class="payment-value">{{ paymentInfo.accountHolderName }}</div>
           </div>
         </div>
 
-        <button class="edit-btn">
+        <button class="edit-btn" (click)="openBankEditModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -111,12 +111,12 @@
         <div class="review-info-grid">
           <div class="review-info-item">
             <label class="review-label">Insured person</label>
-            <div class="review-value">Sok Akra</div>
+            <div class="review-value">{{ userInfo.insuredName }}</div>
           </div>
           
           <div class="review-info-item">
             <label class="review-label">Contact number</label>
-            <div class="review-value">092 123 1234</div>
+            <div class="review-value">{{ userInfo.contactNumber }}</div>
           </div>
         </div>
 
@@ -125,18 +125,18 @@
           <div class="review-info-grid">
             <div class="review-info-item">
               <label class="review-label">Bank name</label>
-              <div class="review-value">Wing</div>
+              <div class="review-value">{{ paymentInfo.bankName }}</div>
             </div>
             
             <div class="review-info-item">
               <label class="review-label">Bank account number</label>
-              <div class="review-value">021 233 235 135</div>
+              <div class="review-value">{{ paymentInfo.bankAccountNumber }}</div>
             </div>
           </div>
           
           <div class="review-info-item">
             <label class="review-label">Holder's name</label>
-            <div class="review-value">Sok Akra</div>
+            <div class="review-value">{{ paymentInfo.accountHolderName }}</div>
           </div>
         </div>
       </div>
@@ -154,8 +154,36 @@
           <!-- Medicash specific details -->
           <div *ngIf="selectedClaimType === 'medicash'">
             <div class="review-info-item">
-              <label class="review-label">Date for partial disability</label>
+              <label class="review-label">Start of hospital stay</label>
               <div class="review-value">{{ eventDetails.startDate | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="review-info-item">
+              <label class="review-label">End of hospital stay</label>
+              <div class="review-value">{{ eventDetails.endDate | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Reason for hospital stay</label>
+              <div class="review-value">{{ eventDetails.reason }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Symptoms</label>
+              <div class="review-value">{{ eventDetails.symptoms }}</div>
+            </div>
+          </div>
+
+          <!-- Critical illness specific details -->
+          <div *ngIf="selectedClaimType === 'critical-illness'">
+            <div class="review-info-item">
+              <label class="review-label">Diagnosis date/Accident date</label>
+              <div class="review-value">{{ criticalIllnessDetails.diagnosisDate | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Diagnosis/nature of accident</label>
+              <div class="review-value">{{ criticalIllnessDetails.diagnosis }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Symptoms description</label>
+              <div class="review-value">{{ criticalIllnessDetails.symptoms }}</div>
             </div>
           </div>
 
@@ -165,51 +193,91 @@
               <label class="review-label">Date for partial disability</label>
               <div class="review-value">{{ accidentalDisabilityDetails.accidentDate | date:'dd/MM/yyyy' }}</div>
             </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Reason for partial disability</label>
+              <div class="review-value">{{ accidentalDisabilityDetails.reason }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Disability details</label>
+              <div class="review-value">{{ accidentalDisabilityDetails.disabilityDetails }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Employment status</label>
+              <div class="review-value">{{ getEmploymentStatusDisplay() }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Main duties before being disabled</label>
+              <div class="review-value">{{ accidentalDisabilityDetails.mainDuties }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Activities you can no longer do</label>
+              <div class="review-value">{{ accidentalDisabilityDetails.activities }}</div>
+            </div>
           </div>
 
           <!-- Total disability specific details -->
           <div *ngIf="selectedClaimType === 'total-disability'">
             <div class="review-info-item">
-              <label class="review-label">Date for partial disability</label>
+              <label class="review-label">Accident/Diagnosis date</label>
+              <div class="review-value">{{ totalDisabilityDetails.accidentDate | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="review-info-item">
+              <label class="review-label">Date of total disability started</label>
               <div class="review-value">{{ totalDisabilityDetails.disabilityStartDate | date:'dd/MM/yyyy' }}</div>
             </div>
-          </div>
-
-          <!-- Critical illness specific details -->
-          <div *ngIf="selectedClaimType === 'critical-illness'">
-            <div class="review-info-item">
-              <label class="review-label">Date for partial disability</label>
-              <div class="review-value">{{ criticalIllnessDetails.diagnosisDate | date:'dd/MM/yyyy' }}</div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Reason for total disability</label>
+              <div class="review-value">{{ totalDisabilityDetails.reason }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Cause of total disability</label>
+              <div class="review-value">{{ totalDisabilityDetails.cause === 'accidental' ? 'Accidental' : 'Non-accidental' }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Disability details</label>
+              <div class="review-value">{{ totalDisabilityDetails.disabilityDetails }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Employment status</label>
+              <div class="review-value">{{ getTotalDisabilityEmploymentStatusDisplay() }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Occupation</label>
+              <div class="review-value">{{ totalDisabilityDetails.occupation }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Main duties before being disabled</label>
+              <div class="review-value">{{ totalDisabilityDetails.mainDuties }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Activities you can no longer do</label>
+              <div class="review-value">{{ totalDisabilityDetails.activities }}</div>
             </div>
           </div>
 
           <!-- Death specific details -->
           <div *ngIf="selectedClaimType === 'death'">
             <div class="review-info-item">
-              <label class="review-label">Date for partial disability</label>
+              <label class="review-label">Date of death</label>
               <div class="review-value">{{ deathDetails.dateOfDeath | date:'dd/MM/yyyy' }}</div>
             </div>
+            <div class="review-info-item">
+              <label class="review-label">Date of diagnosis or accident</label>
+              <div class="review-value">{{ deathDetails.diagnosisAccidentDate | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Cause of death</label>
+              <div class="review-value">{{ deathDetails.cause === 'accidental' ? 'Accidental' : 'Non-accidental' }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Description of what happened</label>
+              <div class="review-value">{{ deathDetails.description }}</div>
+            </div>
+            <div class="review-info-item full-width">
+              <label class="review-label">Symptoms description</label>
+              <div class="review-value">{{ deathDetails.symptoms }}</div>
+            </div>
           </div>
-        </div>
-
-        <div class="review-info-item full-width">
-          <label class="review-label">Reason for partial disability</label>
-          <div class="review-value">{{ getReasonForDisability() }}</div>
-        </div>
-
-        <div class="review-info-item full-width">
-          <label class="review-label">Disability details</label>
-          <div class="review-value">{{ getDisabilityDetails() }}</div>
-        </div>
-
-        <div class="review-info-item full-width">
-          <label class="review-label">Employment status</label>
-          <div class="review-value">{{ getEmploymentStatusForReview() }}</div>
-        </div>
-
-        <div class="review-info-item full-width">
-          <label class="review-label">Main duties before being disabled</label>
-          <div class="review-value">{{ getMainDutiesForReview() }}</div>
         </div>
       </div>
 
@@ -217,33 +285,37 @@
       <div class="review-section">
         <h3 class="review-section-title">
           Documents
-          <button class="edit-btn-small">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Edit
-          </button>
         </h3>
 
         <div class="documents-section">
           <div class="document-category">
             <h4 class="document-category-title">Proof of Total Disability</h4>
             
-            <div class="document-item">
-              <div class="document-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="document-info">
-                <div class="document-name">uploaded_document_sample.pdf</div>
-                <div class="document-size">117.24 KB</div>
-              </div>
+            <!-- File Upload Area -->
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('proof-total-disability')">
+              <input type="file" 
+                     id="proof-total-disability-upload" 
+                     (change)="onFileSelected($event, 'proof-total-disability')" 
+                     multiple 
+                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="proof-total-disability-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="upload-text">
+                  <div class="upload-title">Click to upload documents</div>
+                  <div class="upload-subtitle">PDF, DOC, DOCX, JPG, PNG (Max 10MB each)</div>
+                </div>
+              </label>
             </div>
 
-            <div class="document-item">
+            <!-- Uploaded Files Display -->
+            <div *ngFor="let file of uploadedFiles['proof-total-disability']; let i = index" class="document-item">
               <div class="document-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
@@ -251,29 +323,63 @@
                 </svg>
               </div>
               <div class="document-info">
-                <div class="document-name">uploaded_document_sample.pdf</div>
-                <div class="document-size">117.24 KB</div>
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
               </div>
+              <button class="remove-file-btn" (click)="removeFile('proof-total-disability', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Add More Files Button -->
+            <div *ngIf="hasUploadedFiles('proof-total-disability')" class="add-more-files">
+              <input type="file" 
+                     id="proof-total-disability-upload-more" 
+                     (change)="onFileSelected($event, 'proof-total-disability')" 
+                     multiple 
+                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="proof-total-disability-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Add more files
+              </label>
             </div>
           </div>
 
           <div class="document-category">
             <h4 class="document-category-title">Proof of Relationship with the Life Insured</h4>
             
-            <div class="document-item">
-              <div class="document-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="document-info">
-                <div class="document-name">uploaded_document_sample.pdf</div>
-                <div class="document-size">117.24 KB</div>
-              </div>
+            <!-- File Upload Area -->
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('proof-relationship')">
+              <input type="file" 
+                     id="proof-relationship-upload" 
+                     (change)="onFileSelected($event, 'proof-relationship')" 
+                     multiple 
+                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="proof-relationship-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="upload-text">
+                  <div class="upload-title">Click to upload documents</div>
+                  <div class="upload-subtitle">PDF, DOC, DOCX, JPG, PNG (Max 10MB each)</div>
+                </div>
+              </label>
             </div>
 
-            <div class="document-item">
+            <!-- Uploaded Files Display -->
+            <div *ngFor="let file of uploadedFiles['proof-relationship']; let i = index" class="document-item">
               <div class="document-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
@@ -281,9 +387,32 @@
                 </svg>
               </div>
               <div class="document-info">
-                <div class="document-name">uploaded_document_sample.pdf</div>
-                <div class="document-size">117.24 KB</div>
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
               </div>
+              <button class="remove-file-btn" (click)="removeFile('proof-relationship', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Add More Files Button -->
+            <div *ngIf="hasUploadedFiles('proof-relationship')" class="add-more-files">
+              <input type="file" 
+                     id="proof-relationship-upload-more" 
+                     (change)="onFileSelected($event, 'proof-relationship')" 
+                     multiple 
+                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="proof-relationship-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Add more files
+              </label>
             </div>
           </div>
         </div>
@@ -348,17 +477,17 @@
           <h2 class="section-title">Event details</h2>
           
           <div class="form-group">
-            <label class="form-label">Start of hospital stay</label>
+            <label class="form-label">Start of hospital stay <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="eventDetails.startDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">End of hospital stay</label>
+            <label class="form-label">End of hospital stay <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="eventDetails.endDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Reason for hospital stay</label>
+            <label class="form-label">Reason for hospital stay <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="3" 
                       placeholder="Sample description: Sharp pain in my head"
@@ -366,7 +495,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Symptoms</label>
+            <label class="form-label">Symptoms <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="3" 
                       placeholder="Sample description: Sharp chest pain that spreads to the arm"
@@ -379,12 +508,12 @@
           <h2 class="section-title">Event details</h2>
           
           <div class="form-group">
-            <label class="form-label">Diagnosis date/Accident date</label>
+            <label class="form-label">Diagnosis date/Accident date <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="criticalIllnessDetails.diagnosisDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Diagnosis/nature of accident</label>
+            <label class="form-label">Diagnosis/nature of accident <span class="required">*</span></label>
             <input type="text" 
                    class="form-input" 
                    placeholder="ex.: stomach cancer, brain tumor, stroke..."
@@ -392,7 +521,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Please describe your symptoms and when they started.</label>
+            <label class="form-label">Please describe your symptoms and when they started. <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Sample description: Sharp chest pain that spreads to the arm"
@@ -409,12 +538,12 @@
           <h2 class="section-title">Event details</h2>
           
           <div class="form-group">
-            <label class="form-label">Accident date</label>
+            <label class="form-label">Accident date <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="accidentalDisabilityDetails.accidentDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Reason for partial disability</label>
+            <label class="form-label">Reason for partial disability <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="3" 
                       placeholder="Sample description: I crashed my motorbike"
@@ -422,7 +551,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Disability details</label>
+            <label class="form-label">Disability details <span class="required">*</span></label>
             <input type="text" 
                    class="form-input" 
                    placeholder="Sample description: loss of arm"
@@ -430,7 +559,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Employment status</label>
+            <label class="form-label">Employment status <span class="required">*</span></label>
             <div class="form-input employment-status-input" (click)="openEmploymentStatusModal()">
               <span [class.placeholder]="!accidentalDisabilityDetails.employmentStatus">
                 {{ getEmploymentStatusDisplay() || 'Select an option' }}
@@ -442,7 +571,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Describe your main duties before your disability</label>
+            <label class="form-label">Describe your main duties before your disability <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Sample description: As a nurse, I use my hands to administer medications, IVs, and other treatments"
@@ -450,7 +579,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">List the activities you did before your disability and the ones you can no longer do because of it.</label>
+            <label class="form-label">List the activities you did before your disability and the ones you can no longer do because of it. <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Describe the activities you could do before and what you can no longer do"
@@ -463,7 +592,7 @@
           <h2 class="section-title">Event details</h2>
           
           <div class="form-group">
-            <label class="form-label">Reason for total disability</label>
+            <label class="form-label">Reason for total disability <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="3" 
                       placeholder="Sample description: Sharp chest pain that spreads to the arm"
@@ -471,7 +600,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Cause of total disability</label>
+            <label class="form-label">Cause of total disability <span class="required">*</span></label>
             <div class="radio-group-vertical">
               <label class="radio-option">
                 <input type="radio" name="disabilityCause" value="accidental" [(ngModel)]="totalDisabilityDetails.cause">
@@ -488,17 +617,17 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Accident/Diagnosis date</label>
+            <label class="form-label">Accident/Diagnosis date <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="totalDisabilityDetails.accidentDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Date of total disability started</label>
+            <label class="form-label">Date of total disability started <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="totalDisabilityDetails.disabilityStartDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Disability details</label>
+            <label class="form-label">Disability details <span class="required">*</span></label>
             <input type="text" 
                    class="form-input" 
                    placeholder="Sample description: loss of arm"
@@ -506,7 +635,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Employment status</label>
+            <label class="form-label">Employment status <span class="required">*</span></label>
             <div class="form-input employment-status-input" (click)="openTotalDisabilityEmploymentStatusModal()">
               <span [class.placeholder]="!totalDisabilityDetails.employmentStatus">
                 {{ getTotalDisabilityEmploymentStatusDisplay() || 'Select an option' }}
@@ -518,7 +647,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Occupation</label>
+            <label class="form-label">Occupation <span class="required">*</span></label>
             <input type="text" 
                    class="form-input" 
                    placeholder="Enter occupation"
@@ -526,7 +655,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Describe your main duties before your disability</label>
+            <label class="form-label">Describe your main duties before your disability <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Sample description: As a nurse, I use my hands to administer medications, IVs, and other treatments"
@@ -534,7 +663,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">List the activities you did before your disability and the ones you can no longer do because of it.</label>
+            <label class="form-label">List the activities you did before your disability and the ones you can no longer do because of it. <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Describe the activities you could do before and what you can no longer do"
@@ -547,12 +676,12 @@
           <h2 class="section-title">Event details</h2>
           
           <div class="form-group">
-            <label class="form-label">Date of death</label>
+            <label class="form-label">Date of death <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="deathDetails.dateOfDeath">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Cause of death</label>
+            <label class="form-label">Cause of death <span class="required">*</span></label>
             <div class="radio-group-vertical">
               <label class="radio-option">
                 <input type="radio" name="deathCause" value="accidental" [(ngModel)]="deathDetails.cause">
@@ -569,12 +698,12 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Date of diagnosis or accident happened</label>
+            <label class="form-label">Date of diagnosis or accident happened <span class="required">*</span></label>
             <input type="date" class="form-input" [(ngModel)]="deathDetails.diagnosisAccidentDate">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Describe what happened leading to the death</label>
+            <label class="form-label">Describe what happened leading to the death <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Sample description: I have stage 4 breast cancer"
@@ -582,7 +711,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Describe symptoms when they started</label>
+            <label class="form-label">Describe symptoms when they started <span class="required">*</span></label>
             <textarea class="form-textarea" 
                       rows="4" 
                       placeholder="Sample description: Sharp chest pain that spreads to the arm"
@@ -631,6 +760,78 @@
       <div class="modal-footer">
         <button class="modal-select-btn" (click)="confirmEmploymentStatus()">
           Select
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Number Edit Modal -->
+  <div class="modal-overlay" *ngIf="showContactEditModal" (click)="closeContactEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Contact Number</h3>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Contact number</label>
+          <input type="tel" 
+                 class="form-input" 
+                 [(ngModel)]="tempContactNumber" 
+                 placeholder="Enter contact number">
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="modal-cancel-btn" (click)="closeContactEditModal()">
+          Cancel
+        </button>
+        <button class="modal-save-btn" (click)="saveContactNumber()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bank Account Edit Modal -->
+  <div class="modal-overlay" *ngIf="showBankEditModal" (click)="closeBankEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Bank Account</h3>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Bank name</label>
+          <input type="text" 
+                 class="form-input" 
+                 [(ngModel)]="tempPaymentInfo.bankName" 
+                 placeholder="Enter bank name">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Bank account number</label>
+          <input type="text" 
+                 class="form-input" 
+                 [(ngModel)]="tempPaymentInfo.bankAccountNumber" 
+                 placeholder="Enter account number">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Account holder's name</label>
+          <input type="text" 
+                 class="form-input" 
+                 [(ngModel)]="tempPaymentInfo.accountHolderName" 
+                 placeholder="Enter account holder's name">
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="modal-cancel-btn" (click)="closeBankEditModal()">
+          Cancel
+        </button>
+        <button class="modal-save-btn" (click)="saveBankAccount()">
+          Save
         </button>
       </div>
     </div>

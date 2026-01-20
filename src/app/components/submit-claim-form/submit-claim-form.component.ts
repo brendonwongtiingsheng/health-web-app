@@ -11,6 +11,36 @@ export class SubmitClaimFormComponent {
   currentStep: number = 1;
   selectedClaimType: string = '';
   showEmploymentStatusModal: boolean = false;
+  showContactEditModal: boolean = false;
+  showBankEditModal: boolean = false;
+  
+  // File upload properties
+  uploadedFiles: { [key: string]: File[] } = {
+    'proof-total-disability': [],
+    'proof-relationship': []
+  };
+
+  // User information
+  userInfo = {
+    claimFor: 'someone-else', // 'myself' or 'someone-else'
+    insuredName: 'Sok Akra',
+    contactNumber: '092 124 1234'
+  };
+
+  // Payment information
+  paymentInfo = {
+    bankName: 'Wing',
+    bankAccountNumber: '021 223 235 135',
+    accountHolderName: 'Sok Akra'
+  };
+
+  // Temporary edit data
+  tempContactNumber: string = '';
+  tempPaymentInfo = {
+    bankName: '',
+    bankAccountNumber: '',
+    accountHolderName: ''
+  };
   
   // Event details form data
   eventDetails = {
@@ -99,8 +129,22 @@ export class SubmitClaimFormComponent {
         alert('Please select a claim type');
         return;
       }
+      
+      // Validate form fields based on selected claim type
+      const validationResult = this.validateCurrentStep();
+      if (!validationResult.isValid) {
+        alert(validationResult.message);
+        return;
+      }
+      
       this.currentStep = 3;
     } else if (this.currentStep === 3) {
+      // Validate documents are uploaded
+      if (!this.validateDocuments()) {
+        alert('Please upload at least one document for each required category');
+        return;
+      }
+      
       // Final submission
       this.onSubmit();
     }
@@ -124,6 +168,12 @@ export class SubmitClaimFormComponent {
   clearStep2Data() {
     // 清除选中的claim type
     this.selectedClaimType = '';
+    
+    // 清除上传的文件
+    this.uploadedFiles = {
+      'proof-total-disability': [],
+      'proof-relationship': []
+    };
     
     // 清除所有事件详情数据
     this.eventDetails = {
@@ -208,60 +258,231 @@ export class SubmitClaimFormComponent {
     return claimType ? claimType.name : '';
   }
 
-  // Methods for Step 3 Review
-  getReasonForDisability(): string {
+  // File upload methods
+  onFileSelected(event: any, category: string) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+          continue;
+        }
+        
+        // Validate file type
+        const allowedTypes = ['application/pdf', 'application/msword', 
+                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                             'image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+          alert(`File "${file.name}" is not a supported format. Please upload PDF, DOC, DOCX, JPG, or PNG files.`);
+          continue;
+        }
+        
+        this.uploadedFiles[category].push(file);
+      }
+    }
+    
+    // Clear the input value to allow selecting the same file again
+    event.target.value = '';
+  }
+
+  removeFile(category: string, index: number) {
+    this.uploadedFiles[category].splice(index, 1);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  hasUploadedFiles(category: string): boolean {
+    return this.uploadedFiles[category] && this.uploadedFiles[category].length > 0;
+  }
+
+  // Validation methods
+  validateCurrentStep(): { isValid: boolean, message: string } {
     switch (this.selectedClaimType) {
       case 'medicash':
-        return this.eventDetails.reason;
+        return this.validateMedicashDetails();
       case 'critical-illness':
-        return this.criticalIllnessDetails.symptoms;
+        return this.validateCriticalIllnessDetails();
       case 'accidental-partial-disability':
-        return this.accidentalDisabilityDetails.reason;
+        return this.validateAccidentalDisabilityDetails();
       case 'total-disability':
-        return this.totalDisabilityDetails.reason;
+        return this.validateTotalDisabilityDetails();
       case 'death':
-        return this.deathDetails.description;
+        return this.validateDeathDetails();
       default:
-        return 'Sharp chest pain that spreads to the arm';
+        return { isValid: false, message: 'Please select a valid claim type' };
     }
   }
 
-  getDisabilityDetails(): string {
-    switch (this.selectedClaimType) {
-      case 'medicash':
-        return 'I am no';
-      case 'critical-illness':
-        return 'I am no';
-      case 'accidental-partial-disability':
-        return this.accidentalDisabilityDetails.disabilityDetails || 'I am no';
-      case 'total-disability':
-        return this.totalDisabilityDetails.disabilityDetails || 'I am no';
-      case 'death':
-        return 'I am no';
-      default:
-        return 'I am no';
+  validateMedicashDetails(): { isValid: boolean, message: string } {
+    const details = this.eventDetails;
+    
+    if (!details.startDate) {
+      return { isValid: false, message: 'Please enter the start date of hospital stay' };
+    }
+    if (!details.endDate) {
+      return { isValid: false, message: 'Please enter the end date of hospital stay' };
+    }
+    if (!details.reason || details.reason.trim() === '') {
+      return { isValid: false, message: 'Please enter the reason for hospital stay' };
+    }
+    if (!details.symptoms || details.symptoms.trim() === '') {
+      return { isValid: false, message: 'Please describe your symptoms' };
+    }
+    
+    return { isValid: true, message: '' };
+  }
+
+  validateCriticalIllnessDetails(): { isValid: boolean, message: string } {
+    const details = this.criticalIllnessDetails;
+    
+    if (!details.diagnosisDate) {
+      return { isValid: false, message: 'Please enter the diagnosis date' };
+    }
+    if (!details.diagnosis || details.diagnosis.trim() === '') {
+      return { isValid: false, message: 'Please enter the diagnosis' };
+    }
+    if (!details.symptoms || details.symptoms.trim() === '') {
+      return { isValid: false, message: 'Please describe your symptoms' };
+    }
+    
+    return { isValid: true, message: '' };
+  }
+
+  validateAccidentalDisabilityDetails(): { isValid: boolean, message: string } {
+    const details = this.accidentalDisabilityDetails;
+    
+    if (!details.accidentDate) {
+      return { isValid: false, message: 'Please enter the accident date' };
+    }
+    if (!details.reason || details.reason.trim() === '') {
+      return { isValid: false, message: 'Please enter the reason for partial disability' };
+    }
+    if (!details.disabilityDetails || details.disabilityDetails.trim() === '') {
+      return { isValid: false, message: 'Please provide disability details' };
+    }
+    if (!details.employmentStatus) {
+      return { isValid: false, message: 'Please select your employment status' };
+    }
+    if (!details.mainDuties || details.mainDuties.trim() === '') {
+      return { isValid: false, message: 'Please describe your main duties before being disabled' };
+    }
+    if (!details.activities || details.activities.trim() === '') {
+      return { isValid: false, message: 'Please describe activities you cannot perform' };
+    }
+    
+    return { isValid: true, message: '' };
+  }
+
+  validateTotalDisabilityDetails(): { isValid: boolean, message: string } {
+    const details = this.totalDisabilityDetails;
+    
+    if (!details.reason || details.reason.trim() === '') {
+      return { isValid: false, message: 'Please enter the reason for total disability' };
+    }
+    if (!details.cause || details.cause.trim() === '') {
+      return { isValid: false, message: 'Please specify if caused by accident or illness' };
+    }
+    if (!details.accidentDate) {
+      return { isValid: false, message: 'Please enter the accident/diagnosis date' };
+    }
+    if (!details.disabilityStartDate) {
+      return { isValid: false, message: 'Please enter when the disability started' };
+    }
+    if (!details.disabilityDetails || details.disabilityDetails.trim() === '') {
+      return { isValid: false, message: 'Please provide disability details' };
+    }
+    if (!details.employmentStatus) {
+      return { isValid: false, message: 'Please select your employment status' };
+    }
+    if (!details.occupation || details.occupation.trim() === '') {
+      return { isValid: false, message: 'Please enter your occupation' };
+    }
+    if (!details.mainDuties || details.mainDuties.trim() === '') {
+      return { isValid: false, message: 'Please describe your main duties' };
+    }
+    if (!details.activities || details.activities.trim() === '') {
+      return { isValid: false, message: 'Please describe activities you cannot perform' };
+    }
+    
+    return { isValid: true, message: '' };
+  }
+
+  validateDeathDetails(): { isValid: boolean, message: string } {
+    const details = this.deathDetails;
+    
+    if (!details.dateOfDeath) {
+      return { isValid: false, message: 'Please enter the date of death' };
+    }
+    if (!details.cause || details.cause.trim() === '') {
+      return { isValid: false, message: 'Please specify if death was caused by accident or illness' };
+    }
+    if (!details.diagnosisAccidentDate) {
+      return { isValid: false, message: 'Please enter the diagnosis/accident date' };
+    }
+    if (!details.description || details.description.trim() === '') {
+      return { isValid: false, message: 'Please provide a description of the cause' };
+    }
+    if (!details.symptoms || details.symptoms.trim() === '') {
+      return { isValid: false, message: 'Please describe the symptoms' };
+    }
+    
+    return { isValid: true, message: '' };
+  }
+
+  validateDocuments(): boolean {
+    // Check if at least one document is uploaded for each required category
+    return this.hasUploadedFiles('proof-total-disability') && 
+           this.hasUploadedFiles('proof-relationship');
+  }
+
+  // Contact number edit methods
+  openContactEditModal() {
+    this.tempContactNumber = this.userInfo.contactNumber;
+    this.showContactEditModal = true;
+  }
+
+  closeContactEditModal() {
+    this.showContactEditModal = false;
+    this.tempContactNumber = '';
+  }
+
+  saveContactNumber() {
+    if (this.tempContactNumber.trim()) {
+      this.userInfo.contactNumber = this.tempContactNumber.trim();
+      this.closeContactEditModal();
     }
   }
 
-  getEmploymentStatusForReview(): string {
-    switch (this.selectedClaimType) {
-      case 'accidental-partial-disability':
-        return this.getEmploymentStatusDisplay() || 'Unemployed';
-      case 'total-disability':
-        return this.getTotalDisabilityEmploymentStatusDisplay() || 'Unemployed';
-      default:
-        return 'Unemployed';
-    }
+  // Bank account edit methods
+  openBankEditModal() {
+    this.tempPaymentInfo = { ...this.paymentInfo };
+    this.showBankEditModal = true;
   }
 
-  getMainDutiesForReview(): string {
-    switch (this.selectedClaimType) {
-      case 'accidental-partial-disability':
-        return this.accidentalDisabilityDetails.mainDuties || 'Sharp chest pain that spreads to the arm';
-      case 'total-disability':
-        return this.totalDisabilityDetails.mainDuties || 'Sharp chest pain that spreads to the arm';
-      default:
-        return 'Sharp chest pain that spreads to the arm';
+  closeBankEditModal() {
+    this.showBankEditModal = false;
+    this.tempPaymentInfo = {
+      bankName: '',
+      bankAccountNumber: '',
+      accountHolderName: ''
+    };
+  }
+
+  saveBankAccount() {
+    if (this.tempPaymentInfo.bankName.trim() && 
+        this.tempPaymentInfo.bankAccountNumber.trim() && 
+        this.tempPaymentInfo.accountHolderName.trim()) {
+      this.paymentInfo = { ...this.tempPaymentInfo };
+      this.closeBankEditModal();
     }
   }
 }
