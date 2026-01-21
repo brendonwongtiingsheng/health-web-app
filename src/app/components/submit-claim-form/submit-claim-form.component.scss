@@ -947,3 +947,583 @@
     font-size: 14px;
   }
 }
+
+// Document upload styles
+.documents-header {
+  margin-bottom: 24px;
+  
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .documents-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  
+  .documents-note {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    
+    strong {
+      color: #333;
+    }
+  }
+  
+  .sample-document-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #007bff;
+    font-size: 14px;
+    cursor: pointer;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
+    svg {
+      color: #007bff;
+    }
+  }
+}
+
+.document-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.document-category {
+  .document-category-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .document-category-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+}
+
+.document-subcategory {
+  margin-bottom: 24px;
+  
+  .document-subcategory-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .document-subcategory-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+}
+
+.file-upload-area {
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  background-color: #fafafa;
+  transition: all 0.2s;
+  
+  &:hover {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+  }
+  
+  .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    
+    .upload-icon {
+      color: #666;
+      
+      svg {
+        width: 48px;
+        height: 48px;
+      }
+    }
+    
+    .upload-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .upload-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+      max-width: 300px;
+    }
+  }
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  
+  .document-icon {
+    color: #666;
+    flex-shrink: 0;
+  }
+  
+  .document-info {
+    flex: 1;
+    min-width: 0;
+    
+    .document-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .document-size {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+  }
+  
+  .remove-file-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #dc3545;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+}
+
+.add-more-files {
+  margin-top: 12px;
+  
+  .add-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background-color: #007bff;
+      color: white;
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.download-form-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  
+  svg {
+    color: #666;
+  }
+}
+
+.document-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+  
+  strong {
+    color: #333;
+  }
+}
+.form-note {
+  margin: 16px 0;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+  
+  p {
+    margin: 0;
+  }
+}
+
+.download-form-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #007bff;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 8px;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+  
+  svg {
+    color: #007bff;
+    width: 16px;
+    height: 16px;
+  }
+}
+// Additional styles for Medicash documents
+.upload-description {
+  font-size: 14px;
+  color: #666;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.form-description {
+  font-size: 14px;
+  color: #666;
+  margin: 12px 0;
+  line-height: 1.4;
+}
+
+.download-form-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  
+  svg {
+    color: #666;
+  }
+}
+
+.document-subcategory {
+  margin-bottom: 32px;
+  
+  .document-subcategory-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+  }
+}
+
+.document-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+  
+  strong {
+    color: #333;
+  }
+}
+// Review step document display styles
+.documents-section {
+  .document-category {
+    margin-bottom: 24px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .document-category-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e9ecef;
+    }
+  }
+}
+
+.no-documents-message {
+  text-align: center;
+  padding: 32px 20px;
+  color: #666;
+  font-style: italic;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// Documents Upload Step Styles
+.documents-upload-section {
+  .progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    
+    .step-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      
+      &.filled {
+        background-color: #28a745;
+        color: white;
+      }
+      
+      &.current {
+        background-color: #007bff;
+        color: white;
+      }
+    }
+    
+    .step-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      margin-left: auto;
+    }
+  }
+  
+  .section-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  
+  .upload-info {
+    margin-bottom: 16px;
+    
+    .upload-limit {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+      line-height: 1.4;
+      
+      strong {
+        color: #333;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .sample-document-link {
+    margin-bottom: 32px;
+    
+    .sample-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: #007bff;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 0;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+      
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+.document-type {
+  margin-bottom: 32px;
+  
+  .document-type-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .download-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .document-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+  }
+}
+
+.medical-note {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #856404;
+    line-height: 1.4;
+    
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+// Simplified file upload area for documents step
+.documents-upload-section .file-upload-area {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  background-color: white;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+  
+  &:hover {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+  }
+  
+  .upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #666;
+    
+    .upload-icon {
+      color: #666;
+      
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+    
+    .upload-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+}
+
+// Responsive design for documents upload
+@media (max-width: 768px) {
+  .documents-upload-section {
+    .progress-indicator {
+      padding: 12px;
+      
+      .step-circle {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+      }
+      
+      .step-label {
+        font-size: 13px;
+      }
+    }
+    
+    .document-type {
+      margin-bottom: 24px;
+      
+      .document-type-title {
+        font-size: 15px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  }
+}

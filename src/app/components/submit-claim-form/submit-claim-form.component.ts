@@ -16,6 +16,11 @@ export class SubmitClaimFormComponent implements OnInit {
   
   // File upload properties
   uploadedFiles: { [key: string]: File[] } = {
+    'medical-discharge': [],
+    'hospital-receipt': [],
+    'physician-statement': [],
+    'supporting-documents': [],
+    'general-documents': [],
     'proof-total-disability': [],
     'proof-relationship': []
   };
@@ -126,9 +131,7 @@ export class SubmitClaimFormComponent implements OnInit {
 
   onNext() {
     if (this.currentStep === 1) {
-      this.currentStep = 2;
-      // 保持展开状态，不要收起内容
-      // this.isInformationExpanded = false; // 删除这行
+      this.currentStep = 2; // Go to Claim Event Information
     } else if (this.currentStep === 2) {
       if (!this.selectedClaimType) {
         alert('Please select a claim type');
@@ -142,14 +145,15 @@ export class SubmitClaimFormComponent implements OnInit {
         return;
       }
       
-      this.currentStep = 3;
+      this.currentStep = 3; // Go to Documents Upload
     } else if (this.currentStep === 3) {
       // Validate documents are uploaded
-      if (!this.validateDocuments()) {
-        alert('Please upload at least one document for each required category');
+      if (!this.validateDocumentsUpload()) {
+        alert('Please upload at least one document');
         return;
       }
-      
+      this.currentStep = 4; // Go to Review
+    } else if (this.currentStep === 4) {
       // Final submission
       this.onSubmit();
     }
@@ -183,6 +187,11 @@ export class SubmitClaimFormComponent implements OnInit {
     
     // 清除上传的文件
     this.uploadedFiles = {
+      'medical-discharge': [],
+      'hospital-receipt': [],
+      'physician-statement': [],
+      'supporting-documents': [],
+      'general-documents': [],
       'proof-total-disability': [],
       'proof-relationship': []
     };
@@ -304,18 +313,16 @@ export class SubmitClaimFormComponent implements OnInit {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        // Validate file size (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+        // Validate file size (max 20MB)
+        if (file.size > 20 * 1024 * 1024) {
+          alert(`File "${file.name}" is too large. Maximum size is 20MB.`);
           continue;
         }
         
         // Validate file type
-        const allowedTypes = ['application/pdf', 'application/msword', 
-                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                             'image/jpeg', 'image/jpg', 'image/png'];
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
-          alert(`File "${file.name}" is not a supported format. Please upload PDF, DOC, DOCX, JPG, or PNG files.`);
+          alert(`File "${file.name}" is not a supported format. Please upload PDF, JPG, or PNG files.`);
           continue;
         }
         
@@ -477,10 +484,49 @@ export class SubmitClaimFormComponent implements OnInit {
     return { isValid: true, message: '' };
   }
 
+  validateDocumentsUpload(): boolean {
+    // Check if at least one document is uploaded based on claim type
+    if (this.selectedClaimType === 'medicash') {
+      return this.hasUploadedFiles('medical-discharge') || 
+             this.hasUploadedFiles('hospital-receipt') ||
+             this.hasUploadedFiles('physician-statement') ||
+             this.hasUploadedFiles('supporting-documents');
+    } else {
+      return this.hasUploadedFiles('general-documents');
+    }
+  }
+
+  getDocumentSectionTitle(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return 'Medicash documents';
+      case 'critical-illness':
+        return 'Critical illness documents';
+      case 'accidental-partial-disability':
+        return 'Accidental partial disability documents';
+      case 'total-disability':
+        return 'Total disability documents';
+      case 'death':
+        return 'Death claim documents';
+      default:
+        return 'Required documents';
+    }
+  }
+
   validateDocuments(): boolean {
     // Check if at least one document is uploaded for each required category
     return this.hasUploadedFiles('proof-total-disability') && 
            this.hasUploadedFiles('proof-relationship');
+  }
+
+  viewSampleDocument() {
+    // Open sample document in new tab or show modal
+    alert('Sample document viewer would open here');
+  }
+
+  downloadForm(formType: string) {
+    // Download the specified form
+    alert(`Downloading ${formType} form...`);
   }
 
   // Contact number edit methods
