@@ -20,6 +20,10 @@ export class SubmitClaimFormComponent implements OnInit {
     'hospital-receipt': [],
     'physician-statement': [],
     'supporting-documents': [],
+    'critical-physician-statement': [],
+    'critical-medical-evidence': [],
+    'critical-pathology-reports': [],
+    'critical-supporting-documents': [],
     'general-documents': [],
     'proof-total-disability': [],
     'proof-relationship': []
@@ -191,6 +195,10 @@ export class SubmitClaimFormComponent implements OnInit {
       'hospital-receipt': [],
       'physician-statement': [],
       'supporting-documents': [],
+      'critical-physician-statement': [],
+      'critical-medical-evidence': [],
+      'critical-pathology-reports': [],
+      'critical-supporting-documents': [],
       'general-documents': [],
       'proof-total-disability': [],
       'proof-relationship': []
@@ -498,6 +506,11 @@ export class SubmitClaimFormComponent implements OnInit {
              this.hasUploadedFiles('hospital-receipt') ||
              this.hasUploadedFiles('physician-statement') ||
              this.hasUploadedFiles('supporting-documents');
+    } else if (this.selectedClaimType === 'critical-illness') {
+      return this.hasUploadedFiles('critical-physician-statement') ||
+             this.hasUploadedFiles('critical-medical-evidence') ||
+             this.hasUploadedFiles('critical-pathology-reports') ||
+             this.hasUploadedFiles('critical-supporting-documents');
     } else {
       return this.hasUploadedFiles('general-documents');
     }
@@ -529,6 +542,11 @@ export class SubmitClaimFormComponent implements OnInit {
   viewSampleDocument() {
     // Open sample document in new tab or show modal
     alert('Sample document viewer would open here');
+  }
+
+  viewDownloadableForms() {
+    // Show downloadable forms modal or navigate to forms page
+    alert('Downloadable forms viewer would open here');
   }
 
   downloadForm(formType: string) {

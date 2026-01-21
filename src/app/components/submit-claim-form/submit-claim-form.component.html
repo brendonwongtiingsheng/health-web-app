@@ -381,23 +381,23 @@
           </div>
         </div>
 
-        <!-- Documents for other claim types -->
-        <div class="document-category" *ngIf="selectedClaimType !== 'medicash'">
-          <h3 class="document-category-title">Required documents</h3>
-          <p class="document-description">Upload all necessary documents to support your {{ getSelectedClaimTypeName() }} claim.</p>
+        <!-- Documents for Critical illness claim type -->
+        <div class="document-category" *ngIf="selectedClaimType === 'critical-illness'">
+          <h3 class="document-category-title">Medical documents</h3>
+          <p class="document-description">Upload all necessary documents or the Attending Physicians Statement Form below.</p>
 
-          <!-- General document upload for other claim types -->
+          <!-- Attended Physician's Statement Form -->
           <div class="document-type">
-            <h4 class="document-type-title">Supporting documents</h4>
+            <h4 class="document-type-title">Attended Physician's Statement Form</h4>
             
-            <div class="file-upload-area" *ngIf="!hasUploadedFiles('general-documents')">
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('critical-physician-statement')">
               <input type="file" 
-                     id="general-documents-upload" 
-                     (change)="onFileSelected($event, 'general-documents')" 
+                     id="critical-physician-statement-upload" 
+                     (change)="onFileSelected($event, 'critical-physician-statement')" 
                      multiple 
                      accept=".pdf,.jpg,.jpeg,.png"
                      style="display: none;">
-              <label for="general-documents-upload" class="upload-label">
+              <label for="critical-physician-statement-upload" class="upload-label">
                 <div class="upload-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
@@ -408,7 +408,7 @@
               </label>
             </div>
 
-            <div *ngFor="let file of uploadedFiles['general-documents']; let i = index" class="document-item">
+            <div *ngFor="let file of uploadedFiles['critical-physician-statement']; let i = index" class="document-item">
               <div class="document-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
@@ -419,7 +419,7 @@
                 <div class="document-name">{{ file.name }}</div>
                 <div class="document-size">{{ formatFileSize(file.size) }}</div>
               </div>
-              <button class="remove-file-btn" (click)="removeFile('general-documents', i)">
+              <button class="remove-file-btn" (click)="removeFile('critical-physician-statement', i)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
                   <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
@@ -427,14 +427,14 @@
               </button>
             </div>
 
-            <div *ngIf="hasUploadedFiles('general-documents')" class="add-more-files">
+            <div *ngIf="hasUploadedFiles('critical-physician-statement')" class="add-more-files">
               <input type="file" 
-                     id="general-documents-upload-more" 
-                     (change)="onFileSelected($event, 'general-documents')" 
+                     id="critical-physician-statement-upload-more" 
+                     (change)="onFileSelected($event, 'critical-physician-statement')" 
                      multiple 
                      accept=".pdf,.jpg,.jpeg,.png"
                      style="display: none;">
-              <label for="general-documents-upload-more" class="add-more-btn">
+              <label for="critical-physician-statement-upload-more" class="add-more-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
                   <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
@@ -443,11 +443,204 @@
               </label>
             </div>
 
-            <p class="document-note">Please upload all relevant documents to support your claim.</p>
+            <p class="document-note">This form should be completed by the attending physician to assist in supporting the claim.</p>
+            
+            <div class="form-note">
+              <p>If you are uploading a specific form, please choose any downloadable form provided below.</p>
+              <button class="sample-btn" (click)="viewDownloadableForms()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                  <path d="M9,9h0a3,3,0,0,1,6,0c0,2-3,3-3,3" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12,17h0" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                View downloadable forms
+              </button>
+            </div>
+          </div>
+
+          <!-- Evidence of medical treatment and diagnosis documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Evidence of medical treatment and diagnosis documents</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('critical-medical-evidence')">
+              <input type="file" 
+                     id="critical-medical-evidence-upload" 
+                     (change)="onFileSelected($event, 'critical-medical-evidence')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-medical-evidence-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['critical-medical-evidence']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('critical-medical-evidence', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('critical-medical-evidence')" class="add-more-files">
+              <input type="file" 
+                     id="critical-medical-evidence-upload-more" 
+                     (change)="onFileSelected($event, 'critical-medical-evidence')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-medical-evidence-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">This document requires hospital/clinic official stamp and signature of the Attending Physician.</p>
+          </div>
+
+          <!-- Pathology reports -->
+          <div class="document-type">
+            <h4 class="document-type-title">Pathology reports</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('critical-pathology-reports')">
+              <input type="file" 
+                     id="critical-pathology-reports-upload" 
+                     (change)="onFileSelected($event, 'critical-pathology-reports')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-pathology-reports-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['critical-pathology-reports']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('critical-pathology-reports', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('critical-pathology-reports')" class="add-more-files">
+              <input type="file" 
+                     id="critical-pathology-reports-upload-more" 
+                     (change)="onFileSelected($event, 'critical-pathology-reports')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-pathology-reports-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">This document can be a Biopsy Result, MRI, CT Scan, etc.</p>
+          </div>
+
+          <!-- Supporting documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Supporting documents</h4>
+            <h5 class="document-subtitle">Reliable sources such as police reports or news articles</h5>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('critical-supporting-documents')">
+              <input type="file" 
+                     id="critical-supporting-documents-upload" 
+                     (change)="onFileSelected($event, 'critical-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-supporting-documents-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['critical-supporting-documents']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('critical-supporting-documents', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('critical-supporting-documents')" class="add-more-files">
+              <input type="file" 
+                     id="critical-supporting-documents-upload-more" 
+                     (change)="onFileSelected($event, 'critical-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="critical-supporting-documents-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Additional documents are required to support the claim event only if the death was caused by an accident. Please note that proper report is mandatory if the death caused by accident.</p>
           </div>
         </div>
+        </div>
       </div>
-    </div>
 
     <!-- Step 4: Review Claim -->
     <div *ngIf="currentStep === 4">
@@ -711,8 +904,80 @@
             </div>
           </div>
 
+          <!-- Documents for Critical illness claim type -->
+          <div class="document-category" *ngIf="selectedClaimType === 'critical-illness'">
+            
+            <!-- Attended Physician's Statement Form -->
+            <div class="document-type" *ngIf="hasUploadedFiles('critical-physician-statement')">
+              <h4 class="document-category-title">Attended Physician's Statement Form</h4>
+              <div *ngFor="let file of uploadedFiles['critical-physician-statement']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Evidence of medical treatment and diagnosis documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('critical-medical-evidence')">
+              <h4 class="document-category-title">Evidence of medical treatment and diagnosis documents</h4>
+              <div *ngFor="let file of uploadedFiles['critical-medical-evidence']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pathology reports -->
+            <div class="document-type" *ngIf="hasUploadedFiles('critical-pathology-reports')">
+              <h4 class="document-category-title">Pathology reports</h4>
+              <div *ngFor="let file of uploadedFiles['critical-pathology-reports']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('critical-supporting-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['critical-supporting-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Documents for other claim types -->
-          <div class="document-category" *ngIf="selectedClaimType !== 'medicash'">
+          <div class="document-category" *ngIf="selectedClaimType !== 'medicash' && selectedClaimType !== 'critical-illness'">
             <div class="document-type" *ngIf="hasUploadedFiles('general-documents')">
               <h4 class="document-category-title">Supporting Documents</h4>
               <div *ngFor="let file of uploadedFiles['general-documents']; let i = index" class="document-item">
