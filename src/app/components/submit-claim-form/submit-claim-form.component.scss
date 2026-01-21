@@ -235,7 +235,6 @@
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ddd;
-  border-radius: 8px;
   font-size: 16px;
   background-color: white;
   box-sizing: border-box;
@@ -312,7 +311,6 @@
   right: 0;
   padding: 20px;
   background-color: transparent;
-  border-top: 1px solid #e9ecef;
   z-index: 100;
 }
 
@@ -329,7 +327,7 @@
   transition: all 0.3s;
 
   &:hover {
-    background-color: #c82333;
+    background-color: #EC6453;
   }
 
   &:active {
@@ -465,7 +463,6 @@
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ddd;
-  border-radius: 8px;
   font-size: 16px;
   background-color: white;
   box-sizing: border-box;
@@ -757,7 +754,6 @@
 // File upload styles
 .file-upload-area {
   border: 2px dashed #ddd;
-  border-radius: 8px;
   padding: 24px;
   text-align: center;
   background-color: #fafafa;
@@ -1037,7 +1033,6 @@
 
 .file-upload-area {
   border: 2px dashed #ddd;
-  border-radius: 12px;
   padding: 32px 20px;
   text-align: center;
   background-color: #fafafa;
@@ -1461,7 +1456,6 @@
 // Simplified file upload area for documents step
 .documents-upload-section .file-upload-area {
   border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 16px;
   text-align: center;
   background-color: white;
@@ -1523,6 +1517,595 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+      }
+    }
+  }
+}
+// Important note for Death documents
+.important-note {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  border-left: 4px solid #f39c12;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #856404;
+    line-height: 1.5;
+    
+    strong {
+      font-weight: 600;
+      color: #6c5500;
+    }
+  }
+}
+// Document info box for Death Physician's Statement
+.document-info-box {
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: #fafafa;
+  
+  .document-info-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    
+    .document-info-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+      flex: 1;
+      line-height: 1.3;
+    }
+    
+    .download-btn {
+      background: none;
+      border: none;
+      color: #282B3E;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+      flex-shrink: 0;
+      margin-left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  
+  .document-info-description {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+// Responsive design for document info box
+@media (max-width: 768px) {
+  .document-info-box {
+    padding: 16px;
+    
+    .document-info-header {
+      align-items: flex-start;
+      
+      .document-info-title {
+        font-size: 15px;
+        padding-right: 8px;
+      }
+      
+      .download-btn {
+        margin-left: 8px;
+        margin-top: 2px;
+        
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+}
+// Success Page Styles
+.success-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #FAFAFA;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Prevent any overflow
+  width: 100vw; // Ensure full viewport width
+  height: 100vh; // Ensure full viewport height
+}
+
+.success-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  flex-shrink: 0;
+  
+  .close-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    color: #666;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.success-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 100px; // Space for fixed button
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden; // Prevent horizontal scroll
+  box-sizing: border-box; // Include padding in width calculation
+}
+
+.success-illustration {
+  margin-bottom: 32px;
+  
+  .success-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+  }
+}
+
+.success-message {
+  text-align: center;
+  margin-bottom: 32px;
+  
+  p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.claim-details {
+  width: calc(100% - 32px); // Reduce width to account for margins
+  background-color: white; // White background
+  padding: 20px;
+  margin: 0 16px 24px 16px; // Add left and right margins
+  border: 1px solid #e9ecef; // Add border around the entire container
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); // Subtle shadow
+}
+
+.claim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  
+  .claim-type {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #28a745;
+      border-radius: 50%;
+    }
+    
+    .status-text {
+      font-size: 14px;
+      color: #28a745;
+      font-weight: 500;
+    }
+  }
+}
+
+.claim-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0; // Remove padding since parent container has padding
+  border: none; // Remove border since parent container has border
+  border-radius: 0; // Remove border radius
+  background-color: transparent; // Transparent background
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0; // Simple padding, no border
+  
+  .info-label {
+    font-size: 14px;
+    color: #555; // Darker color for better readability
+    font-weight: 500;
+  }
+  
+  .info-value {
+    font-size: 14px;
+    color: #222; // Much darker color for better contrast
+    font-weight: 600; // Bolder weight for prominence
+    text-align: right;
+  }
+}
+
+.success-note {
+  text-align: center;
+  margin-bottom: 32px;
+  
+  p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.success-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background-color: transparent;
+  z-index: 100;
+  
+  .view-claim-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: #EC6453;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: #c82333;
+    }
+    
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
+
+// Responsive design for success page
+@media (max-width: 768px) {
+  .success-page {
+    overflow: hidden; // Ensure no overflow on mobile
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .success-header {
+    padding: 12px 16px;
+  }
+  
+  .success-content {
+    padding: 16px;
+    padding-bottom: 100px; // Space for fixed button
+    max-width: 100%; // Use full width on mobile
+    overflow-x: hidden; // Prevent horizontal scroll
+    box-sizing: border-box;
+  }
+  
+  .success-illustration {
+    margin-bottom: 24px;
+    
+    .success-image {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  
+  .success-message {
+    margin-bottom: 24px;
+    width: 100%; // Ensure full width
+    box-sizing: border-box;
+    
+    p {
+      font-size: 15px;
+      margin: 0; // Remove any margins that could cause overflow
+    }
+  }
+  
+  .claim-details {
+    width: 100%; // Use full width instead of calc
+    padding: 16px; // Consistent padding
+    margin: 0 0 20px 0; // Remove left/right margins on mobile
+    background-color: white; // Ensure white background
+    border: 1px solid #e9ecef; // Ensure border is present
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); // Subtle shadow
+    box-sizing: border-box; // Include padding and border in width
+  }
+  
+  .claim-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    
+    .claim-type {
+      font-size: 16px;
+    }
+  }
+  
+  .claim-info {
+    gap: 12px; // Gap between info rows
+    padding: 0; // Remove padding since parent container has padding
+    border: none; // Remove border since parent container has border
+    border-radius: 0; // Remove border radius
+    background-color: transparent; // Transparent background
+    width: 100%;
+    box-sizing: border-box;
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0; // Simple padding, no individual borders
+      width: 100%;
+      box-sizing: border-box;
+      
+      .info-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+        flex: 0 0 auto;
+        max-width: 40%;
+        margin-right: 12px;
+        word-wrap: break-word;
+      }
+      
+      .info-value {
+        font-size: 14px;
+        color: #111;
+        font-weight: 600;
+        text-align: right;
+        flex: 1;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        max-width: 60%; // Ensure it doesn't overflow
+      }
+    }
+  }
+  
+  .success-note {
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    
+    p {
+      font-size: 13px;
+      margin: 0; // Remove any margins
+    }
+  }
+  
+  .success-actions {
+    padding: 16px;
+    width: 100vw; // Full viewport width
+    box-sizing: border-box;
+    
+    .view-claim-btn {
+      padding: 14px;
+      font-size: 15px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+}
+
+// Expandable Downloadable Forms Styles
+.downloadable-forms-section {
+  margin-top: 12px;
+  
+  .expandable-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px; // Increased from 14px to 16px
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s;
+    justify-content: flex-start;
+    
+    &:hover {
+      color: #333;
+    }
+    
+    .arrow-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      
+      .arrow-icon {
+        transition: transform 0.3s ease;
+      }
+      
+      &.expanded {
+        .arrow-icon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  
+  .downloadable-forms-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+    
+    &.expanded {
+      max-height: 1000px;
+      opacity: 1;
+      margin-top: 16px;
+    }
+    
+    .form-categories {
+      margin-bottom: 20px;
+      
+      .category-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        
+        .category-btn {
+          padding: 6px 12px;
+          border: 1px solid #ddd;
+          border-radius: 16px;
+          background-color: white;
+          color: #666;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s;
+          
+          &:hover {
+            border-color: #28a745;
+            color: #28a745;
+          }
+          
+          &.active {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+          }
+        }
+      }
+    }
+    
+    .downloadable-forms-list {
+      .form-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border: 1px solid #e9ecef;
+        background-color: #fafafa;
+        
+        .form-info {
+          flex: 1;
+          
+          .form-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+            line-height: 1.4;
+          }
+        }
+        
+        .download-form-btn {
+          background: none;
+          border: none;
+          padding: 6px;
+          cursor: pointer;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+          color: #282B3E;
+          flex-shrink: 0;
+          margin-left: 12px;
+          
+          &:hover {
+            background-color: #f0f0f0;
+          }
+          
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design for expandable downloadable forms
+@media (max-width: 768px) {
+  .downloadable-forms-section {
+    .downloadable-forms-content {
+      .form-categories {
+        .category-buttons {
+          gap: 6px;
+          
+          .category-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+          }
+        }
+      }
+      
+      .downloadable-forms-list {
+        .form-item {
+          padding: 10px 12px;
+          
+          .form-info {
+            .form-title {
+              font-size: 13px;
+            }
+          }
+          
+          .download-form-btn {
+            padding: 4px;
+            
+            svg {
+              width: 16px;
+              height: 16px;
+            }
+          }
+        }
       }
     }
   }

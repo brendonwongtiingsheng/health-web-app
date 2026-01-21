@@ -1,4 +1,63 @@
 <div class="submit-form-page">
+  <!-- Success Page -->
+  <div class="success-page" *ngIf="showSuccessPage">
+    <div class="success-header">
+      <button class="close-btn" (click)="closeSuccessPage()" aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="success-content">
+      <div class="success-illustration">
+        <img src="assets/Illustration_APE.png" alt="Success" class="success-image">
+      </div>
+
+      <div class="success-message">
+        <p>Thank you for your submission. We've received it and will handle it with care and priority.</p>
+      </div>
+
+      <div class="claim-details">
+        <div class="claim-header">
+          <h3 class="claim-type">{{ submissionData.claimType }}</h3>
+          <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-text">Under review</span>
+          </div>
+        </div>
+
+        <div class="claim-info">
+          <div class="info-row">
+            <span class="info-label">Ref. no</span>
+            <span class="info-value">{{ submissionData.refNo }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Life insured</span>
+            <span class="info-value">{{ submissionData.lifeInsured }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Submission date</span>
+            <span class="info-value">{{ submissionData.submissionDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-note">
+        <p>We will keep you updated on the status of your claim submission. You can also track your claim in the Claim History section.</p>
+      </div>
+
+      <div class="success-actions">
+        <button class="view-claim-btn" (click)="viewMyClaim()">
+          View my claim
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Form Content (hidden when success page is shown) -->
+  <div *ngIf="!showSuccessPage">
   <!-- Header -->
   <header class="header">
     <button class="back-btn" (click)="goBack()" aria-label="Back">
@@ -247,9 +306,10 @@
             <p class="document-note">Hospital billing which is charged the patient for all service including room and board, ICU service, etc.</p>
           </div>
 
-          <!-- Attended Physician's Statement Form -->
-          <div class="document-type">
-            <h4 class="document-type-title">Attended Physician's Statement Form 
+          <!-- Attended Physician's Statement Form - Information Box -->
+          <div class="document-info-box">
+            <div class="document-info-header">
+              <h4 class="document-info-title">Attended Physician's Statement Form</h4>
               <button class="download-btn" (click)="downloadForm('physician-statement')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
@@ -257,62 +317,8 @@
                   <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
                 </svg>
               </button>
-            </h4>
-            
-            <div class="file-upload-area" *ngIf="!hasUploadedFiles('physician-statement')">
-              <input type="file" 
-                     id="physician-statement-upload" 
-                     (change)="onFileSelected($event, 'physician-statement')" 
-                     multiple 
-                     accept=".pdf,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="physician-statement-upload" class="upload-label">
-                <div class="upload-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <span class="upload-text">Choose file</span>
-              </label>
             </div>
-
-            <div *ngFor="let file of uploadedFiles['physician-statement']; let i = index" class="document-item">
-              <div class="document-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="document-info">
-                <div class="document-name">{{ file.name }}</div>
-                <div class="document-size">{{ formatFileSize(file.size) }}</div>
-              </div>
-              <button class="remove-file-btn" (click)="removeFile('physician-statement', i)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
-                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
-            </div>
-
-            <div *ngIf="hasUploadedFiles('physician-statement')" class="add-more-files">
-              <input type="file" 
-                     id="physician-statement-upload-more" 
-                     (change)="onFileSelected($event, 'physician-statement')" 
-                     multiple 
-                     accept=".pdf,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="physician-statement-upload-more" class="add-more-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
-                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                Choose file
-              </label>
-            </div>
-
-            <p class="document-note">This form should be completed by the attending physician to assist in supporting the claim.</p>
+            <p class="document-info-description">This form should be completed by the attending physician to assist in supporting the claim.</p>
           </div>
 
           <!-- Supporting documents -->
@@ -378,6 +384,414 @@
 
           <div class="medical-note">
             <p><strong>Note:</strong> All medical treatment documents such as Doctor certificate, Radiography report, and all laboratory results are required.</p>
+          </div>
+        </div>
+
+        <!-- Documents for Total disability claim type -->
+        <div class="document-category" *ngIf="selectedClaimType === 'total-disability'">
+          <h3 class="document-category-title">Medical documents</h3>
+          <p class="document-description">If the Medical Discharge Summary or Letter is unavailable, please download the form below for the hospital or physician to complete and submit to us.</p>
+
+          <!-- Attended Physician's Statement Form - Information Box -->
+          <div class="document-info-box">
+            <div class="document-info-header">
+              <h4 class="document-info-title">Attended Physician's Statement Form</h4>
+              <button class="download-btn" (click)="downloadForm('total-disability-physician-statement')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+            <p class="document-info-description">This form should be completed by the attending physician to assist in supporting the claim.</p>
+          </div>
+
+          <!-- Proof of Total Disability -->
+          <div class="document-type">
+            <h4 class="document-type-title">Proof of Total Disability</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('total-disability-proof')">
+              <input type="file" 
+                     id="total-disability-proof-upload" 
+                     (change)="onFileSelected($event, 'total-disability-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="total-disability-proof-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['total-disability-proof']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('total-disability-proof', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('total-disability-proof')" class="add-more-files">
+              <input type="file" 
+                     id="total-disability-proof-upload-more" 
+                     (change)="onFileSelected($event, 'total-disability-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="total-disability-proof-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">All medical treatment documents such as Doctor certificate, Radiography report, and all laboratory results.</p>
+          </div>
+
+          <!-- Supporting documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Supporting documents</h4>
+            <h5 class="document-subtitle">Reliable sources such as police reports or news articles</h5>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('total-supporting-documents')">
+              <input type="file" 
+                     id="total-supporting-documents-upload" 
+                     (change)="onFileSelected($event, 'total-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="total-supporting-documents-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['total-supporting-documents']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('total-supporting-documents', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('total-supporting-documents')" class="add-more-files">
+              <input type="file" 
+                     id="total-supporting-documents-upload-more" 
+                     (change)="onFileSelected($event, 'total-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="total-supporting-documents-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Additional documents are required to support the claim event only if the total disability was caused by an accident. Please note that proper report is mandatory if the total disability caused by accident.</p>
+          </div>
+        </div>
+
+        <!-- Documents for Death claim type -->
+        <div class="document-category" *ngIf="selectedClaimType === 'death'">
+          <div class="important-note">
+            <p><strong>Important note:</strong> If the person passed away within 2 years after being issued or reinstated, please ask the most recent doctor who treated the deceased to complete the attached Attending Physician's Statement (APS) form. This helps us to process the claim faster.</p>
+          </div>
+
+          <h3 class="document-category-title">Death related documents</h3>
+          <p class="document-description">If you can't find the Proof of Death Attended Physician's Statement, please download the form below for the hospital or physician to fill out and submit back to us.</p>
+
+          <!-- Proof of Death Attended Physician's Statement (Death) - Information Box -->
+          <div class="document-info-box">
+            <div class="document-info-header">
+              <h4 class="document-info-title">Proof of Death Attended Physician's Statement (Death)</h4>
+              <button class="download-btn" (click)="downloadForm('death-physician-statement')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+            <p class="document-info-description">To be completed by the last attended doctor/physician for a death that took place.</p>
+          </div>
+
+          <!-- Proof of cause of death -->
+          <div class="document-type">
+            <h4 class="document-type-title">Proof of cause of death (Medical certificate or Attending Physician Statement)</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('death-cause-proof')">
+              <input type="file" 
+                     id="death-cause-proof-upload" 
+                     (change)="onFileSelected($event, 'death-cause-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-cause-proof-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['death-cause-proof']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('death-cause-proof', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('death-cause-proof')" class="add-more-files">
+              <input type="file" 
+                     id="death-cause-proof-upload-more" 
+                     (change)="onFileSelected($event, 'death-cause-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-cause-proof-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">This form must be completed by the attending physician to verify death.</p>
+          </div>
+
+          <!-- Medical treatment documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Medical treatment documents</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('death-medical-documents')">
+              <input type="file" 
+                     id="death-medical-documents-upload" 
+                     (change)="onFileSelected($event, 'death-medical-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-medical-documents-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['death-medical-documents']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('death-medical-documents', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('death-medical-documents')" class="add-more-files">
+              <input type="file" 
+                     id="death-medical-documents-upload-more" 
+                     (change)="onFileSelected($event, 'death-medical-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-medical-documents-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Documents like hospital certificate, histopathology report, and all laboratory results.</p>
+          </div>
+
+          <!-- Certified true copy of Death Certificate -->
+          <div class="document-type">
+            <h4 class="document-type-title">Certified true copy of Death Certificate</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('death-certificate')">
+              <input type="file" 
+                     id="death-certificate-upload" 
+                     (change)="onFileSelected($event, 'death-certificate')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-certificate-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['death-certificate']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('death-certificate', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('death-certificate')" class="add-more-files">
+              <input type="file" 
+                     id="death-certificate-upload-more" 
+                     (change)="onFileSelected($event, 'death-certificate')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-certificate-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Issued by the competent authorities (Commune/Sangkat).</p>
+          </div>
+
+          <!-- Supporting documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Supporting documents</h4>
+            <h5 class="document-subtitle">Reliable sources such as police reports or news articles</h5>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('death-supporting-documents')">
+              <input type="file" 
+                     id="death-supporting-documents-upload" 
+                     (change)="onFileSelected($event, 'death-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-supporting-documents-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['death-supporting-documents']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('death-supporting-documents', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('death-supporting-documents')" class="add-more-files">
+              <input type="file" 
+                     id="death-supporting-documents-upload-more" 
+                     (change)="onFileSelected($event, 'death-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="death-supporting-documents-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Additional documents are required to support the claim event only if the death was caused by an accident. Please note that proper report is mandatory if the death caused by accident.</p>
           </div>
         </div>
 
@@ -447,14 +861,74 @@
             
             <div class="form-note">
               <p>If you are uploading a specific form, please choose any downloadable form provided below.</p>
-              <button class="sample-btn" (click)="viewDownloadableForms()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                  <path d="M9,9h0a3,3,0,0,1,6,0c0,2-3,3-3,3" stroke="currentColor" stroke-width="2"/>
-                  <path d="M12,17h0" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                View downloadable forms
-              </button>
+              <div class="downloadable-forms-section">
+                <button class="expandable-btn" (click)="toggleDownloadableForms()">
+                  <div class="arrow-container" [class.expanded]="isDownloadableFormsExpanded">
+                    <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="#EC6453" stroke-width="2" fill="none"/>
+                      <path d="M8 12l4 4 4-4" stroke="#EC6453" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  View downloadable forms
+                </button>
+                
+                <div class="downloadable-forms-content" [class.expanded]="isDownloadableFormsExpanded">
+                  <div class="form-categories">
+                    <div class="category-buttons">
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'aps'" 
+                              (click)="selectFormCategory('aps')">
+                        APS form
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'brain'" 
+                              (click)="selectFormCategory('brain')">
+                        Brain
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'cancer'" 
+                              (click)="selectFormCategory('cancer')">
+                        Cancer
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'heart'" 
+                              (click)="selectFormCategory('heart')">
+                        Heart
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'kidney'" 
+                              (click)="selectFormCategory('kidney')">
+                        Kidney
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'liver'" 
+                              (click)="selectFormCategory('liver')">
+                        Liver
+                      </button>
+                      <button class="category-btn" 
+                              [class.active]="selectedFormCategory === 'lung'" 
+                              (click)="selectFormCategory('lung')">
+                        Lung
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="downloadable-forms-list">
+                    <div class="form-item" *ngFor="let form of getFormsForCategory(selectedFormCategory)">
+                      <div class="form-info">
+                        <h4 class="form-title">{{ form.title }}</h4>
+                      </div>
+                      <button class="download-form-btn" (click)="downloadSpecificForm(form.id)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                          <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                          <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -637,6 +1111,149 @@
             </div>
 
             <p class="document-note">Additional documents are required to support the claim event only if the death was caused by an accident. Please note that proper report is mandatory if the death caused by accident.</p>
+          </div>
+        </div>
+
+        <!-- Documents for Accidental Partial Disability claim type -->
+        <div class="document-category" *ngIf="selectedClaimType === 'accidental-partial-disability'">
+
+          <h4 class="document-category-title">Medical documents</h4>
+          <p class="document-description">If the Medical Discharge Summary or Letter is unavailable, please download the form below for the hospital or physician to complete and submit to us.</p>
+
+          <!-- Attended Physician's Statement Form - Information Box -->
+          <div class="document-info-box">
+            <div class="document-info-header">
+              <h4 class="document-info-title">Attended Physician's Statement Form</h4>
+              <button class="download-btn" (click)="downloadForm('accidental-physician-statement')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+            <p class="document-info-description">This form should be completed by the attending physician to assist in supporting the claim.</p>
+          </div>
+
+          <!-- Proof of Total Disability -->
+          <div class="document-type">
+            <h4 class="document-type-title">Proof of Total Disability</h4>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('accidental-disability-proof')">
+              <input type="file" 
+                     id="accidental-disability-proof-upload" 
+                     (change)="onFileSelected($event, 'accidental-disability-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="accidental-disability-proof-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['accidental-disability-proof']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('accidental-disability-proof', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('accidental-disability-proof')" class="add-more-files">
+              <input type="file" 
+                     id="accidental-disability-proof-upload-more" 
+                     (change)="onFileSelected($event, 'accidental-disability-proof')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="accidental-disability-proof-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">All medical treatment documents such as Doctor certificate, Radiography report, and all laboratory results.</p>
+          </div>
+
+          <!-- Supporting documents -->
+          <div class="document-type">
+            <h4 class="document-type-title">Supporting documents</h4>
+            <h5 class="document-subtitle">Reliable sources such as police reports or news articles</h5>
+            
+            <div class="file-upload-area" *ngIf="!hasUploadedFiles('accidental-supporting-documents')">
+              <input type="file" 
+                     id="accidental-supporting-documents-upload" 
+                     (change)="onFileSelected($event, 'accidental-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="accidental-supporting-documents-upload" class="upload-label">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <span class="upload-text">Choose file</span>
+              </label>
+            </div>
+
+            <div *ngFor="let file of uploadedFiles['accidental-supporting-documents']; let i = index" class="document-item">
+              <div class="document-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="document-info">
+                <div class="document-name">{{ file.name }}</div>
+                <div class="document-size">{{ formatFileSize(file.size) }}</div>
+              </div>
+              <button class="remove-file-btn" (click)="removeFile('accidental-supporting-documents', i)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="hasUploadedFiles('accidental-supporting-documents')" class="add-more-files">
+              <input type="file" 
+                     id="accidental-supporting-documents-upload-more" 
+                     (change)="onFileSelected($event, 'accidental-supporting-documents')" 
+                     multiple 
+                     accept=".pdf,.jpg,.jpeg,.png"
+                     style="display: none;">
+              <label for="accidental-supporting-documents-upload-more" class="add-more-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Choose file
+              </label>
+            </div>
+
+            <p class="document-note">Additional documents are required to support the claim event only if the total disability was caused by an accident. Please note that police report is mandatory if the total disability caused by accident.</p>
           </div>
         </div>
         </div>
@@ -976,8 +1593,190 @@
             </div>
           </div>
 
+          <!-- Documents for Total disability claim type -->
+          <div class="document-category" *ngIf="selectedClaimType === 'total-disability'">
+            
+            <!-- Attended Physician's Statement Form -->
+            <div class="document-type" *ngIf="hasUploadedFiles('total-physician-statement')">
+              <h4 class="document-category-title">Attended Physician's Statement Form</h4>
+              <div *ngFor="let file of uploadedFiles['total-physician-statement']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Proof of Total Disability -->
+            <div class="document-type" *ngIf="hasUploadedFiles('total-disability-proof')">
+              <h4 class="document-category-title">Proof of Total Disability</h4>
+              <div *ngFor="let file of uploadedFiles['total-disability-proof']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('total-supporting-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['total-supporting-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents for Death claim type -->
+          <div class="document-category" *ngIf="selectedClaimType === 'death'">
+            
+            <!-- Proof of cause of death -->
+            <div class="document-type" *ngIf="hasUploadedFiles('death-cause-proof')">
+              <h4 class="document-category-title">Proof of cause of death (Medical certificate or Attending Physician Statement)</h4>
+              <div *ngFor="let file of uploadedFiles['death-cause-proof']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Medical treatment documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('death-medical-documents')">
+              <h4 class="document-category-title">Medical treatment documents</h4>
+              <div *ngFor="let file of uploadedFiles['death-medical-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Certified true copy of Death Certificate -->
+            <div class="document-type" *ngIf="hasUploadedFiles('death-certificate')">
+              <h4 class="document-category-title">Certified true copy of Death Certificate</h4>
+              <div *ngFor="let file of uploadedFiles['death-certificate']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('death-supporting-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['death-supporting-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents for Accidental Partial Disability claim type -->
+          <div class="document-category" *ngIf="selectedClaimType === 'accidental-partial-disability'">
+            
+            <!-- Attended Physician's Statement Form -->
+            <div class="document-type" *ngIf="hasUploadedFiles('accidental-physician-statement')">
+              <h4 class="document-category-title">Attended Physician's Statement Form</h4>
+              <div *ngFor="let file of uploadedFiles['accidental-physician-statement']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Proof of Total Disability -->
+            <div class="document-type" *ngIf="hasUploadedFiles('accidental-disability-proof')">
+              <h4 class="document-category-title">Proof of Total Disability</h4>
+              <div *ngFor="let file of uploadedFiles['accidental-disability-proof']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('accidental-supporting-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['accidental-supporting-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Documents for other claim types -->
-          <div class="document-category" *ngIf="selectedClaimType !== 'medicash' && selectedClaimType !== 'critical-illness'">
+          <div class="document-category" *ngIf="selectedClaimType !== 'medicash' && selectedClaimType !== 'critical-illness' && selectedClaimType !== 'total-disability' && selectedClaimType !== 'death' && selectedClaimType !== 'accidental-partial-disability'">
             <div class="document-type" *ngIf="hasUploadedFiles('general-documents')">
               <h4 class="document-category-title">Supporting Documents</h4>
               <div *ngFor="let file of uploadedFiles['general-documents']; let i = index" class="document-item">
@@ -1329,10 +2128,10 @@
       <div class="modal-body">
         <div class="employment-option" 
              *ngFor="let option of employmentStatusOptions" 
-             [class.selected]="accidentalDisabilityDetails.employmentStatus === option.value"
+             [class.selected]="getCurrentEmploymentStatus() === option.value"
              (click)="selectEmploymentStatus(option.value)">
           <span class="option-text">{{ option.label }}</span>
-          <div class="check-icon" *ngIf="accidentalDisabilityDetails.employmentStatus === option.value">
+          <div class="check-icon" *ngIf="getCurrentEmploymentStatus() === option.value">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" fill="#28a745"/>
               <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
