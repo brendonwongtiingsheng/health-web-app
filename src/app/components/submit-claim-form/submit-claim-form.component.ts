@@ -350,6 +350,13 @@ export class SubmitClaimFormComponent implements OnInit {
     return this.uploadedFiles[category] && this.uploadedFiles[category].length > 0;
   }
 
+  hasAnyUploadedFiles(): boolean {
+    // Check if any files are uploaded across all categories
+    return Object.keys(this.uploadedFiles).some(category => 
+      this.uploadedFiles[category] && this.uploadedFiles[category].length > 0
+    );
+  }
+
   // Validation methods
   validateCurrentStep(): { isValid: boolean, message: string } {
     switch (this.selectedClaimType) {

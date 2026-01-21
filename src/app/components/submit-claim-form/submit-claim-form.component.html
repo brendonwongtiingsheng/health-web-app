@@ -639,132 +639,100 @@
         </h3>
 
         <div class="documents-section">
-          <div class="document-category">
-            <h4 class="document-category-title">Proof of Total Disability</h4>
+          <!-- Show uploaded documents based on claim type -->
+          <div class="document-category" *ngIf="selectedClaimType === 'medicash'">
             
-            <!-- File Upload Area -->
-            <div class="file-upload-area" *ngIf="!hasUploadedFiles('proof-total-disability')">
-              <input type="file" 
-                     id="proof-total-disability-upload" 
-                     (change)="onFileSelected($event, 'proof-total-disability')" 
-                     multiple 
-                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="proof-total-disability-upload" class="upload-label">
-                <div class="upload-icon">
+            <!-- Medical Discharge Summary/Letter -->
+            <div class="document-type" *ngIf="hasUploadedFiles('medical-discharge')">
+              <h4 class="document-category-title">Medical Discharge Summary/Letter</h4>
+              <div *ngFor="let file of uploadedFiles['medical-discharge']; let i = index" class="document-item">
+                <div class="document-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
-                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
-                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
                   </svg>
                 </div>
-                <div class="upload-text">
-                  <div class="upload-title">Click to upload documents</div>
-                  <div class="upload-subtitle">PDF, DOC, DOCX, JPG, PNG (Max 10MB each)</div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
                 </div>
-              </label>
+              </div>
             </div>
 
-            <!-- Uploaded Files Display -->
-            <div *ngFor="let file of uploadedFiles['proof-total-disability']; let i = index" class="document-item">
-              <div class="document-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                </svg>
+            <!-- Hospital Receipt/Invoice -->
+            <div class="document-type" *ngIf="hasUploadedFiles('hospital-receipt')">
+              <h4 class="document-category-title">Hospital Receipt/Invoice</h4>
+              <div *ngFor="let file of uploadedFiles['hospital-receipt']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
               </div>
-              <div class="document-info">
-                <div class="document-name">{{ file.name }}</div>
-                <div class="document-size">{{ formatFileSize(file.size) }}</div>
-              </div>
-              <button class="remove-file-btn" (click)="removeFile('proof-total-disability', i)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
-                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
             </div>
 
-            <!-- Add More Files Button -->
-            <div *ngIf="hasUploadedFiles('proof-total-disability')" class="add-more-files">
-              <input type="file" 
-                     id="proof-total-disability-upload-more" 
-                     (change)="onFileSelected($event, 'proof-total-disability')" 
-                     multiple 
-                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="proof-total-disability-upload-more" class="add-more-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
-                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                Add more files
-              </label>
+            <!-- Attended Physician's Statement Form -->
+            <div class="document-type" *ngIf="hasUploadedFiles('physician-statement')">
+              <h4 class="document-category-title">Attended Physician's Statement Form</h4>
+              <div *ngFor="let file of uploadedFiles['physician-statement']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            <div class="document-type" *ngIf="hasUploadedFiles('supporting-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['supporting-documents']; let i = index" class="document-item">
+                <div class="document-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="document-category">
-            <h4 class="document-category-title">Proof of Relationship with the Life Insured</h4>
-            
-            <!-- File Upload Area -->
-            <div class="file-upload-area" *ngIf="!hasUploadedFiles('proof-relationship')">
-              <input type="file" 
-                     id="proof-relationship-upload" 
-                     (change)="onFileSelected($event, 'proof-relationship')" 
-                     multiple 
-                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="proof-relationship-upload" class="upload-label">
-                <div class="upload-icon">
+          <!-- Documents for other claim types -->
+          <div class="document-category" *ngIf="selectedClaimType !== 'medicash'">
+            <div class="document-type" *ngIf="hasUploadedFiles('general-documents')">
+              <h4 class="document-category-title">Supporting Documents</h4>
+              <div *ngFor="let file of uploadedFiles['general-documents']; let i = index" class="document-item">
+                <div class="document-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
-                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
-                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
                   </svg>
                 </div>
-                <div class="upload-text">
-                  <div class="upload-title">Click to upload documents</div>
-                  <div class="upload-subtitle">PDF, DOC, DOCX, JPG, PNG (Max 10MB each)</div>
+                <div class="document-info">
+                  <div class="document-name">{{ file.name }}</div>
+                  <div class="document-size">{{ formatFileSize(file.size) }}</div>
                 </div>
-              </label>
-            </div>
-
-            <!-- Uploaded Files Display -->
-            <div *ngFor="let file of uploadedFiles['proof-relationship']; let i = index" class="document-item">
-              <div class="document-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                </svg>
               </div>
-              <div class="document-info">
-                <div class="document-name">{{ file.name }}</div>
-                <div class="document-size">{{ formatFileSize(file.size) }}</div>
-              </div>
-              <button class="remove-file-btn" (click)="removeFile('proof-relationship', i)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
-                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
             </div>
+          </div>
 
-            <!-- Add More Files Button -->
-            <div *ngIf="hasUploadedFiles('proof-relationship')" class="add-more-files">
-              <input type="file" 
-                     id="proof-relationship-upload-more" 
-                     (change)="onFileSelected($event, 'proof-relationship')" 
-                     multiple 
-                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                     style="display: none;">
-              <label for="proof-relationship-upload-more" class="add-more-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
-                  <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                Add more files
-              </label>
-            </div>
+          <!-- Show message if no documents uploaded -->
+          <div class="no-documents-message" *ngIf="!hasAnyUploadedFiles()">
+            <p>No documents uploaded yet.</p>
           </div>
         </div>
       </div>
