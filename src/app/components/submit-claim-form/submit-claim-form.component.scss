@@ -1,3 +1,10 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  background: #f8f9fa;
+}
+
 .submit-form-page {
   display: flex;
   flex-direction: column;
