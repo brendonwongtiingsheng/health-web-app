@@ -755,4 +755,14 @@ export class SubmitClaimFormComponent implements OnInit {
       this.closeBankEditModal();
     }
   }
+
+  // Method to determine if next button should be shown
+  shouldShowNextButton(): boolean {
+    // For step 2, only show next button if claim type is selected
+    if (this.currentStep === 2) {
+      return this.selectedClaimType !== '';
+    }
+    // For all other steps, always show the next button
+    return true;
+  }
 }

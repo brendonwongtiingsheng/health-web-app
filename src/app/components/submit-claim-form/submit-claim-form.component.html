@@ -2104,7 +2104,7 @@
     </div>
 
     <!-- Next Button -->
-    <div class="button-container">
+    <div class="button-container" *ngIf="shouldShowNextButton()">
       <button class="next-btn" (click)="onNext()">
         {{ currentStep === 4 ? 'Submit claim' : 'Next' }}
       </button>
@@ -2112,7 +2112,7 @@
   </div>
 
   <!-- Fixed Next Button -->
-  <div class="fixed-button-container">
+  <div class="fixed-button-container" *ngIf="shouldShowNextButton()">
     <button class="next-btn" (click)="onNext()">
       {{ currentStep === 4 ? 'Submit claim' : 'Next' }}
     </button>
