@@ -240,8 +240,10 @@ export class SubmitClaimFormComponent implements OnInit {
   }
 
   viewMyClaim() {
-    // Navigate back to homepage
-    this.router.navigateByUrl('/');
+    // Navigate back to homepage and refresh
+    this.router.navigateByUrl('/').then(() => {
+      window.location.reload();
+    });
   }
 
   closeSuccessPage() {
