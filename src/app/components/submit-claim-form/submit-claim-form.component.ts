@@ -26,6 +26,10 @@ export class SubmitClaimFormComponent implements OnInit {
 
   selectedFormCategory: FormCategory = 'brain'; // Default to brain category
 
+  private origin = 'https://health-web-app-7kdd.vercel.app';
+
+  SuccessUrl = `${this.origin}/assets/Illustration_APE.png`;
+
   // ✅ Strongly typed forms data (fix TS7053)
   private readonly formsData: Record<FormCategory, DownloadableForm[]> = {
     aps: [{ id: 'aps-general', title: 'General APS Form' }],
