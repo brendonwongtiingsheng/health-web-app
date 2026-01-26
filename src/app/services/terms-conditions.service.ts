@@ -22,7 +22,13 @@ export class TermsConditionsService {
     // 检测是否被 host 加载（通常 host 运行在 8100，remote 在 4200）
     const isLoadedByHost = port === '8100';
     
-    if (isProduction) {
+    // 检查是否禁用网络请求（用于测试）
+    const disableNetwork = localStorage.getItem('mfe-disable-network') === 'true';
+    
+    if (disableNetwork) {
+      console.log('🚫 Network requests disabled for testing');
+      this.apiUrl = '/assets/terms-conditions.json'; // 使用本地文件
+    } else if (isProduction) {
       // 在生产环境先尝试Vercel API路由，如果失败再尝试直接调用
       this.apiUrl = '/api/terms-conditions';
     } else if (isLoadedByHost) {
@@ -37,6 +43,7 @@ export class TermsConditionsService {
     console.log('🌍 Environment:', isProduction ? 'Production' : 'Development');
     console.log('🔗 API URL:', this.apiUrl);
     console.log('🏠 Port:', port, 'Loaded by host:', isLoadedByHost);
+    console.log('🚫 Network disabled:', disableNetwork);
   }
 
   getTermsConditions(locale: string = 'en'): Observable<TermsConditions> {

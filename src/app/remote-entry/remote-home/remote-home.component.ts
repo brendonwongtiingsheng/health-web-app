@@ -17,6 +17,7 @@ export class RemoteHomeComponent extends HostDataMixin implements OnInit {
   submitUrl = `${this.origin}/assets/submit-claim.png`;
   viewUrl   = `${this.origin}/assets/view-claims.png`;
   SuccessUrl = `${this.origin}/assets/Illustration_APE.png`;
+  videoUrl = `${this.origin}/assets/video.png`;
 
   // 组件特定的属性
   userInfo: any = {};
