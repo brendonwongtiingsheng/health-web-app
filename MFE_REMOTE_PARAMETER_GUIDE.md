@@ -244,4 +244,27 @@ getWelcomeMessage(): string {
 - ✅ 多语言支持
 - ✅ 自动数据变化检测
 
+## 🧪 Host 应用测试
+
+### 快速测试方法
+如果您想在 Host 应用中测试参数传递，请参考 `HOST_TESTING_GUIDE.md` 文件，其中包含：
+
+1. **浏览器控制台测试** - 最简单的测试方法
+2. **URL 参数测试** - 通过 URL 传递参数
+3. **HTML 测试页面** - 创建完整的测试界面
+4. **Angular Host 应用示例** - 在 Angular Host 中集成测试
+
+### 最简单的测试方式
+1. 启动您的 MFE 应用: `npm start`
+2. 访问: `http://localhost:4200/test-host-data`
+3. 在浏览器控制台执行:
+```javascript
+window.hostSharedData = {
+  userId: 'test-123',
+  userProfile: { name: 'Test User', language: 'en' },
+  claimType: 'medical'
+};
+```
+4. 观察 MFE 应用中的数据变化
+
 现在你的 MFE 应用已经完全支持从 Host 应用接收和处理参数了！🎉
