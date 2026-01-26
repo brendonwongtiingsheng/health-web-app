@@ -23,6 +23,7 @@ export class SubmitClaimFormComponent implements OnInit {
   showSuccessPage: boolean = false;
   showDownloadableFormsModal: boolean = false;
   isDownloadableFormsExpanded: boolean = false;
+  isDocumentEditMode: boolean = false; // New property for document edit mode
 
   selectedFormCategory: FormCategory = 'brain'; // Default to brain category
 
@@ -764,5 +765,49 @@ export class SubmitClaimFormComponent implements OnInit {
     }
     // For all other steps, always show the next button
     return true;
+  }
+
+  // Method to get current step text
+  getCurrentStepText(): string {
+    switch (this.currentStep) {
+      case 1:
+        return 'Your information';
+      case 2:
+        return 'Claim event information';
+      case 3:
+        return 'Documents';
+      case 4:
+        return 'Review';
+      default:
+        return 'Your information';
+    }
+  }
+
+  // Method to get completed steps array for checkmarks
+  getCompletedSteps(): number[] {
+    const completedCount = this.currentStep - 1;
+    return Array.from({ length: completedCount }, (_, i) => i + 1);
+  }
+
+  // Method to get remaining steps array for dots (only for steps 1-3)
+  getRemainingSteps(): number[] {
+    const remainingCount = 4 - this.currentStep;
+    return Array.from({ length: remainingCount }, (_, i) => i + 1);
+  }
+
+  // Method to get remaining steps for 3-step progress (step 1-3 only)
+  getRemainingStepsForThree(): number[] {
+    const remainingCount = 3 - this.currentStep;
+    return Array.from({ length: remainingCount }, (_, i) => i + 1);
+  }
+
+  // Method to edit documents (go back to step 3)
+  editDocuments() {
+    this.currentStep = 3;
+  }
+
+  // Method to toggle document edit mode in step 4
+  toggleDocumentEditMode() {
+    this.isDocumentEditMode = !this.isDocumentEditMode;
   }
 }
