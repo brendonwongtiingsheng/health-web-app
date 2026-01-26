@@ -29,6 +29,7 @@ export interface HostData {
 export class HostDataService {
   private hostDataSubject = new BehaviorSubject<HostData>({});
   public hostData$ = this.hostDataSubject.asObservable();
+  private periodicCheckInterval?: any;
 
   constructor() {
     console.log('🔧 MFE Host Data Service initialized');
@@ -170,16 +171,28 @@ export class HostDataService {
    * 确保能捕获到 Host 端 MfeSharedDataService 的数据变化
    */
   private setupPeriodicDataCheck(): void {
-    setInterval(() => {
+    // 只有在没有订阅功能时才启用定期检查
+    const subscribeMfeData = (window as any).subscribeMfeData;
+    if (subscribeMfeData && typeof subscribeMfeData === 'function') {
+      console.log('✅ Host 提供了订阅功能，跳过定期检查');
+      return;
+    }
+    
+    console.log('⚠️ Host 未提供订阅功能，启用定期检查（每10秒）');
+    
+    this.periodicCheckInterval = setInterval(() => {
       const currentWindowData = this.getDataFromHostWindow();
       const currentData = this.hostDataSubject.value;
       
-      // 简单的数据变化检测
-      if (JSON.stringify(currentWindowData) !== JSON.stringify(currentData)) {
-        console.log('🔄 检测到 Host 数据变化，更新中...');
+      // 只有在数据真正不同时才更新
+      const currentDataString = JSON.stringify(currentData);
+      const newDataString = JSON.stringify(currentWindowData);
+      
+      if (newDataString !== currentDataString && Object.keys(currentWindowData).length > 0) {
+        console.log('🔄 定期检查：检测到 Host 数据变化，更新中...');
         this.updateHostData(currentWindowData);
       }
-    }, 2000); // 每2秒检查一次
+    }, 10000); // 改为每10秒检查一次，并且只在没有订阅时启用
   }
 
   /**
@@ -320,5 +333,41 @@ export class HostDataService {
         console.error('❌ 清理 MFE 订阅失败:', error);
       }
     }
+    
+    // 清理定期检查
+    this.disablePeriodicCheck();
+  }
+
+  /**
+   * 禁用定期检查
+   */
+  disablePeriodicCheck(): void {
+    if (this.periodicCheckInterval) {
+      clearInterval(this.periodicCheckInterval);
+      this.periodicCheckInterval = undefined;
+      console.log('✅ 定期检查已禁用');
+    }
+  }
+
+  /**
+   * 启用定期检查
+   */
+  enablePeriodicCheck(intervalMs: number = 10000): void {
+    this.disablePeriodicCheck(); // 先清理现有的
+    
+    console.log(`🔄 启用定期检查（每${intervalMs/1000}秒）`);
+    
+    this.periodicCheckInterval = setInterval(() => {
+      const currentWindowData = this.getDataFromHostWindow();
+      const currentData = this.hostDataSubject.value;
+      
+      const currentDataString = JSON.stringify(currentData);
+      const newDataString = JSON.stringify(currentWindowData);
+      
+      if (newDataString !== currentDataString && Object.keys(currentWindowData).length > 0) {
+        console.log('🔄 定期检查：检测到 Host 数据变化，更新中...');
+        this.updateHostData(currentWindowData);
+      }
+    }, intervalMs);
   }
 }

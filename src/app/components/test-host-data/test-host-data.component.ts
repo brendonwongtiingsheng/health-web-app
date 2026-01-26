@@ -42,6 +42,12 @@ import { HostDataService, HostData } from '../../services/host-data.service';
         <button (click)="simulateHostData()" class="test-btn">
           🎭 模拟 Host 数据
         </button>
+        <button (click)="disablePeriodicCheck()" class="test-btn">
+          ⏸️ 禁用定期检查
+        </button>
+        <button (click)="enablePeriodicCheck()" class="test-btn">
+          ▶️ 启用定期检查
+        </button>
         <div class="debug-output">
           <pre>{{ debugOutput }}</pre>
         </div>
@@ -170,6 +176,7 @@ export class TestHostDataComponent extends HostDataMixin implements OnInit {
     // 测试 4: 检查 Window 对象
     this.addDebugLog(`Window hostSharedData: ${JSON.stringify((window as any).hostSharedData)}`);
     this.addDebugLog(`Window getMfeData: ${typeof (window as any).getMfeData}`);
+    this.addDebugLog(`Window subscribeMfeData: ${typeof (window as any).subscribeMfeData}`);
     
     // 测试 5: 检查 URL 参数
     const urlParams = new URLSearchParams(window.location.search);
@@ -207,6 +214,22 @@ export class TestHostDataComponent extends HostDataMixin implements OnInit {
     
     this.addDebugLog('✅ 模拟数据已设置到 Window.hostSharedData');
     this.addDebugLog('⏳ 等待服务检测数据变化...');
+  }
+
+  /**
+   * 禁用定期检查
+   */
+  disablePeriodicCheck(): void {
+    this.hostDataService.disablePeriodicCheck();
+    this.addDebugLog('⏸️ 定期检查已禁用');
+  }
+
+  /**
+   * 启用定期检查
+   */
+  enablePeriodicCheck(): void {
+    this.hostDataService.enablePeriodicCheck(5000); // 5秒间隔
+    this.addDebugLog('▶️ 定期检查已启用（每5秒）');
   }
 
   /**
