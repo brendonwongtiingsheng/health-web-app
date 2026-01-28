@@ -298,13 +298,32 @@
   }
 }
 
+// Underline style for specific inputs
+.underline-input {
+  border: none;
+  border-bottom: 1px solid #8E90A2;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 12px 0;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: #28a745;
+  }
+
+  &[readonly] {
+    background-color: transparent;
+    color: #333;
+  }
+}
+
 .edit-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   background: none;
   border: none;
-  color: #dc3545;
+  color: #282B3E;
   font-size: 14px;
   cursor: pointer;
   padding: 8px 0;
@@ -318,6 +337,7 @@
   svg {
     width: 16px;
     height: 16px;
+    color: #282B3E;
   }
 }
 
@@ -558,9 +578,7 @@
 .medical-evidence-note {
   margin-top: 24px;
   padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #28a745;
+  background-color: #f0f0f0;
 
   p {
     margin: 0;
@@ -702,7 +720,7 @@
 }
 
 .review-section-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   color: #333;
   margin: 20px 0 16px 0;
@@ -729,7 +747,7 @@
   gap: 4px;
   background: none;
   border: none;
-  color: #dc3545;
+  color: #282B3E;
   font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
@@ -743,14 +761,16 @@
   svg {
     width: 14px;
     height: 14px;
+    color: #282B3E;
   }
 }
 
 .review-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 20px;
+  gap: 16px 24px;
   margin-bottom: 16px;
+  align-items: start;
 }
 
 .review-info-item {
@@ -782,8 +802,12 @@
   border-top: 1px solid #f0f0f0;
 }
 
+.claimant-details-section {
+  margin-bottom: 20px;
+}
+
 .review-subsection-title {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 600;
   color: #333;
   margin: 0 0 12px 0;
@@ -791,6 +815,17 @@
 
 .documents-section {
   margin-top: 16px;
+}
+
+.document-notice {
+  margin-bottom: 16px;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+  }
 }
 
 .document-category {
@@ -839,10 +874,10 @@
 
 // File upload styles
 .file-upload-area {
-  border: 2px dashed #ddd;
+  border: 2px dashed #8E90A2;
   padding: 24px;
   text-align: center;
-  background-color: #fafafa;
+  background-color: white;
   transition: all 0.3s ease;
   margin-bottom: 12px;
   
@@ -906,20 +941,27 @@
 .add-more-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  color: #007bff;
-  font-size: 12px;
+  gap: 8px;
+  padding: 16px;
+  background-color: white;
+  border: 2px dashed #8E90A2;
+  color: #666;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
+  justify-content: flex-start;
+  box-sizing: border-box;
   
   &:hover {
-    background-color: #e9ecef;
     border-color: #007bff;
+    background-color: #f8f9ff;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -931,6 +973,15 @@
 }
 
 // Modal styles for edit forms
+.modal-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 20px 0 12px 0;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
 .modal-cancel-btn {
   background-color: #f8f9fa;
   color: #6c757d;
@@ -976,8 +1027,8 @@
 // Responsive design for review
 @media (max-width: 768px) {
   .review-info-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
   }
   
   .review-section-title {
@@ -1217,19 +1268,21 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 16px;
     background-color: white;
-    border: 1px solid #007bff;
-    border-radius: 6px;
-    color: #007bff;
+    border: 2px dashed #8E90A2;
+    color: #666;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
+    width: 100%;
+    justify-content: flex-start;
+    box-sizing: border-box;
     
     &:hover {
-      background-color: #007bff;
-      color: white;
+      border-color: #007bff;
+      background-color: #f8f9ff;
     }
     
     svg {
@@ -1522,25 +1575,24 @@
 .medical-note {
   margin-top: 24px;
   padding: 16px;
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 8px;
+  background-color: #f0f0f0;
   
   p {
     margin: 0;
     font-size: 14px;
-    color: #856404;
+    color: #666;
     line-height: 1.4;
     
     strong {
       font-weight: 600;
+      color: #666;
     }
   }
 }
 
 // Simplified file upload area for documents step
 .documents-upload-section .file-upload-area {
-  border: 1px solid #ddd;
+  border: 2px dashed #8E90A2;
   padding: 16px;
   text-align: center;
   background-color: white;
@@ -1610,20 +1662,17 @@
 .important-note {
   margin-bottom: 24px;
   padding: 16px;
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 8px;
-  border-left: 4px solid #f39c12;
+  background-color: #f0f0f0;
   
   p {
     margin: 0;
     font-size: 14px;
-    color: #856404;
+    color: #666;
     line-height: 1.5;
     
     strong {
       font-weight: 600;
-      color: #6c5500;
+      color: #666;
     }
   }
 }
@@ -2191,6 +2240,183 @@
             }
           }
         }
+      }
+    }
+  }
+}
+
+// Event Details Form Styles (matching exact design)
+.event-details-form {
+  .form-group {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .event-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #8E90A2;
+    text-align: left;
+
+        // Special styling for activities label to move it up
+    &.activities-label {
+      margin-top: -25px;
+    }
+    
+  }
+  
+  .date-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+    .event-date-input {
+      width: 100%;
+      padding: 8px 0 4px 0;
+      border: none;
+      border-bottom: 1px solid #8E90A2;
+      font-size: 16px;
+      background-color: transparent;
+      color: #333;
+      box-sizing: border-box;
+      
+      &:focus {
+        outline: none;
+        border-bottom-color: #28a745;
+      }
+      
+      &::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+    }
+    
+    .calendar-icon {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #282B3E;
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+  
+  .event-textarea {
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.4;
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &::placeholder {
+      color: #B8B8B8;
+      font-style: italic;
+    }
+    
+    // Default style for reason textarea (underline)
+    &.reason-textarea {
+      padding: 8px 0 4px 0;
+      border: none;
+      border-bottom: 1px solid #8E90A2;
+      background-color: transparent;
+      min-height: 60px;
+      
+      &:focus {
+        border-bottom-color: #28a745;
+      }
+      
+      // Special styling for employment status dropdown
+      &.employment-status-input {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        user-select: none;
+        min-height: auto;
+        padding: 8px 0 4px 0;
+
+        .placeholder {
+          color: #B8B8B8;
+          font-style: italic;
+        }
+
+        .dropdown-arrow {
+          color: #666;
+          transition: transform 0.2s;
+        }
+
+        &:hover {
+          border-bottom-color: #28a745;
+        }
+      }
+    }
+    
+    // Special style for symptoms textarea (bordered box)
+    &.symptoms-textarea {
+      padding: 12px 16px;
+      border: 1px solid #8E90A2;
+      background-color: transparent;
+      min-height: 80px;
+      
+      &:focus {
+        border-color: #28a745;
+      }
+    }
+  }
+}
+
+// Responsive design for event details form
+@media (max-width: 768px) {
+  .event-details-form {
+    .form-group {
+      margin-bottom: 28px;
+    }
+    
+    .event-form-label {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    
+    .date-input-wrapper {
+      .event-date-input {
+        font-size: 15px;
+        padding: 6px 0 3px 0;
+      }
+      
+      .calendar-icon {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    .event-textarea {
+      font-size: 15px;
+      
+      &.reason-textarea {
+        padding: 6px 0 3px 0;
+        min-height: 50px;
+        
+        &.employment-status-input {
+          padding: 6px 0 3px 0;
+        }
+      }
+      
+      &.symptoms-textarea {
+        padding: 10px 14px;
+        min-height: 70px;
       }
     }
   }

@@ -20,6 +20,8 @@ export class SubmitClaimFormComponent implements OnInit {
   showEmploymentStatusModal: boolean = false;
   showContactEditModal: boolean = false;
   showBankEditModal: boolean = false;
+  showClaimantInfoEditModal: boolean = false;
+  showClaimEventInfoEditModal: boolean = false;
   showSuccessPage: boolean = false;
   showDownloadableFormsModal: boolean = false;
   isDownloadableFormsExpanded: boolean = false;
@@ -96,6 +98,11 @@ export class SubmitClaimFormComponent implements OnInit {
 
   // Temporary edit data
   tempContactNumber: string = '';
+  tempUserInfo = {
+    claimFor: '',
+    insuredName: '',
+    contactNumber: ''
+  };
   tempPaymentInfo = {
     bankName: '',
     bankAccountNumber: '',
@@ -268,6 +275,8 @@ export class SubmitClaimFormComponent implements OnInit {
     this.showEmploymentStatusModal = false;
     this.showContactEditModal = false;
     this.showBankEditModal = false;
+    this.showClaimantInfoEditModal = false;
+    this.showClaimEventInfoEditModal = false;
 
     // 清除上传的文件
     this.uploadedFiles = {
@@ -308,6 +317,11 @@ export class SubmitClaimFormComponent implements OnInit {
 
     // 清除临时编辑数据
     this.tempContactNumber = '';
+    this.tempUserInfo = {
+      claimFor: '',
+      insuredName: '',
+      contactNumber: ''
+    };
     this.tempPaymentInfo = {
       bankName: '',
       bankAccountNumber: '',
@@ -546,9 +560,6 @@ export class SubmitClaimFormComponent implements OnInit {
     if (!details.mainDuties || details.mainDuties.trim() === '') {
       return { isValid: false, message: 'Please describe your main duties before being disabled' };
     }
-    if (!details.activities || details.activities.trim() === '') {
-      return { isValid: false, message: 'Please describe activities you cannot perform' };
-    }
 
     return { isValid: true, message: '' };
   }
@@ -579,9 +590,6 @@ export class SubmitClaimFormComponent implements OnInit {
     }
     if (!details.mainDuties || details.mainDuties.trim() === '') {
       return { isValid: false, message: 'Please describe your main duties' };
-    }
-    if (!details.activities || details.activities.trim() === '') {
-      return { isValid: false, message: 'Please describe activities you cannot perform' };
     }
 
     return { isValid: true, message: '' };
@@ -809,5 +817,134 @@ export class SubmitClaimFormComponent implements OnInit {
   // Method to toggle document edit mode in step 4
   toggleDocumentEditMode() {
     this.isDocumentEditMode = !this.isDocumentEditMode;
+  }
+
+  // Helper methods for the new claim event information structure
+  getEventDate(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return this.eventDetails.startDate || '29/03/2025';
+      case 'critical-illness':
+        return this.criticalIllnessDetails.diagnosisDate || '29/03/2025';
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.accidentDate || '29/03/2025';
+      case 'total-disability':
+        return this.totalDisabilityDetails.accidentDate || '29/03/2025';
+      case 'death':
+        return this.deathDetails.dateOfDeath || '29/03/2025';
+      default:
+        return '29/03/2025';
+    }
+  }
+
+  getEndDate(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return this.eventDetails.endDate || '29/03/2025';
+      default:
+        return '29/03/2025';
+    }
+  }
+
+  getReasonForStay(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return this.eventDetails.reason || 'Stomach pain';
+      case 'critical-illness':
+        return this.criticalIllnessDetails.diagnosis || 'Critical illness';
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.reason || 'Accident';
+      case 'total-disability':
+        return this.totalDisabilityDetails.reason || 'Total disability';
+      case 'death':
+        return this.deathDetails.cause || 'Death';
+      default:
+        return 'Stomach pain';
+    }
+  }
+
+  getSymptoms(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return this.eventDetails.symptoms || 'I experience symptoms of stomach pain such as indigestion, nausea, and a loss of appetite.';
+      case 'critical-illness':
+        return this.criticalIllnessDetails.symptoms || 'Critical illness symptoms';
+      case 'accidental-partial-disability':
+        return this.accidentalDisabilityDetails.disabilityDetails || 'Disability symptoms';
+      case 'total-disability':
+        return this.totalDisabilityDetails.disabilityDetails || 'Total disability symptoms';
+      case 'death':
+        return this.deathDetails.symptoms || 'Death symptoms';
+      default:
+        return 'I experience symptoms of stomach pain such as indigestion, nausea, and a loss of appetite.';
+    }
+  }
+
+  getCauseOfEvent(): string {
+    switch (this.selectedClaimType) {
+      case 'medicash':
+        return 'Illness';
+      case 'critical-illness':
+        return this.criticalIllnessDetails.diagnosis || 'Illness';
+      case 'accidental-partial-disability':
+        return 'Accident';
+      case 'total-disability':
+        return this.totalDisabilityDetails.cause === 'accidental' ? 'Accident' : 'Illness';
+      case 'death':
+        return this.deathDetails.cause === 'accidental' ? 'Accident' : 'Illness';
+      default:
+        return 'Illness';
+    }
+  }
+
+  editClaimEventInfo() {
+    // Open modal to edit claim event information instead of navigating back
+    this.showClaimEventInfoEditModal = true;
+  }
+
+  editClaimantInfo() {
+    // Open modal to edit claimant information instead of navigating back
+    this.tempUserInfo = { ...this.userInfo };
+    this.tempPaymentInfo = { ...this.paymentInfo };
+    this.showClaimantInfoEditModal = true;
+  }
+
+  // Claimant Info Edit Modal Methods
+  closeClaimantInfoEditModal() {
+    this.showClaimantInfoEditModal = false;
+    this.tempUserInfo = {
+      claimFor: '',
+      insuredName: '',
+      contactNumber: ''
+    };
+    this.tempPaymentInfo = {
+      bankName: '',
+      bankAccountNumber: '',
+      accountHolderName: ''
+    };
+  }
+
+  saveClaimantInfo() {
+    if (
+      this.tempUserInfo.insuredName.trim() &&
+      this.tempUserInfo.contactNumber.trim() &&
+      this.tempPaymentInfo.bankName.trim() &&
+      this.tempPaymentInfo.bankAccountNumber.trim() &&
+      this.tempPaymentInfo.accountHolderName.trim()
+    ) {
+      this.userInfo = { ...this.tempUserInfo };
+      this.paymentInfo = { ...this.tempPaymentInfo };
+      this.closeClaimantInfoEditModal();
+    }
+  }
+
+  // Claim Event Info Edit Modal Methods
+  closeClaimEventInfoEditModal() {
+    this.showClaimEventInfoEditModal = false;
+  }
+
+  saveClaimEventInfo() {
+    // Validation would go here based on claim type
+    this.closeClaimEventInfoEditModal();
   }
 }
