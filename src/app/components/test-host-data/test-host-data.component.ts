@@ -20,6 +20,7 @@ export class TestHostDataComponent implements OnInit, OnDestroy {
     credentialsTest?: any;
     connectionTest?: any;
     refreshTest?: any;
+    secureStorageTest?: any;
     [key: string]: any;
   } = {};
   certificateTestResult: any = null;
@@ -126,15 +127,15 @@ export class TestHostDataComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 测试证书资格验证API - 这是你的原始API调用
+   * 测试获取被保险人信息API
    */
-  async testCertificateEligibility() {
+  async testGetInsured() {
     this.isLoading = true;
     try {
-      console.log('🏥 测试证书资格验证API...');
+      console.log('🏥 测试获取被保险人信息API...');
       console.log('📋 使用保单号:', this.testPolicyNumber);
       
-      const result = await this.authenticatedApiService.verifyCertEligibility(this.testPolicyNumber);
+      const result = await this.authenticatedApiService.getInsured(this.testPolicyNumber);
       
       this.certificateTestResult = {
         success: true,
@@ -143,10 +144,10 @@ export class TestHostDataComponent implements OnInit, OnDestroy {
         timestamp: new Date().toISOString()
       };
       
-      console.log('✅ 证书资格验证成功:', this.certificateTestResult);
+      console.log('✅ 获取被保险人信息成功:', this.certificateTestResult);
       
     } catch (error) {
-      console.error('❌ 证书资格验证失败:', error);
+      console.error('❌ 获取被保险人信息失败:', error);
       
       this.certificateTestResult = {
         success: false,
@@ -290,13 +291,168 @@ export class TestHostDataComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 🔍 专门调试 Access Token
+   */
+  debugAccessToken() {
+    console.log('🔍 开始 Access Token 专项调试...');
+    
+    // 调用服务的调试方法
+    this.hostDataService.debugAccessToken();
+    
+    // 额外的组件级调试
+    console.log('📱 组件级调试信息:');
+    console.log('   当前 apiCredentials:', this.apiCredentials);
+    console.log('   当前 hostData:', this.hostData);
+    
+    alert('Access Token 调试信息已输出到控制台，请按F12查看详细信息');
+  }
+
+  /**
+   * 🔍 获取并显示完整的 Access Token
+   */
+  async showFullAccessToken() {
+    try {
+      console.log('🔍 获取完整 Access Token...');
+      const token = await this.hostDataService.getFullAccessTokenForDebug();
+      
+      if (token) {
+        // 在控制台显示完整token
+        console.log('🔑 完整 Access Token:', token);
+        
+        // 分析token信息
+        console.log('📊 Token 分析:');
+        console.log('   长度:', token.length);
+        console.log('   前50字符:', token.substring(0, 50));
+        console.log('   是否为JWT:', token.startsWith('eyJ'));
+        
+        if (token.startsWith('eyJ')) {
+          try {
+            // 尝试解析JWT payload（不验证签名）
+            const parts = token.split('.');
+            if (parts.length === 3) {
+              const payload = JSON.parse(atob(parts[1]));
+              console.log('🔓 JWT Payload:', payload);
+              
+              if (payload.exp) {
+                const expDate = new Date(payload.exp * 1000);
+                console.log('⏰ Token 过期时间:', expDate.toLocaleString());
+                console.log('⏰ 是否已过期:', expDate < new Date());
+              }
+            }
+          } catch (e) {
+            console.log('⚠️ JWT 解析失败:', e);
+          }
+        }
+        
+        alert(`Access Token 获取成功！\n长度: ${token.length}\n详细信息请查看控制台`);
+      } else {
+        alert('❌ 没有找到 Access Token，请检查 Host 应用是否正确设置了凭据');
+      }
+    } catch (error) {
+      console.error('❌ 获取 Access Token 失败:', error);
+      alert(`获取 Access Token 失败: ${error}`);
+    }
+  }
+
+  /**
+   * 🔍 测试所有可能的 token 获取方式
+   */
+  async testAllTokenSources() {
+    console.log('🔍 测试所有可能的 Token 获取方式...');
+    
+    const results: any = {};
+    
+    // 测试方式1: getMfeApiCredentials
+    try {
+      if ((window as any).getMfeApiCredentials) {
+        const creds1 = (window as any).getMfeApiCredentials();
+        results.getMfeApiCredentials = {
+          available: true,
+          hasToken: !!creds1?.accessToken,
+          tokenPreview: creds1?.accessToken?.substring(0, 20) + '...' || 'N/A'
+        };
+      } else {
+        results.getMfeApiCredentials = { available: false };
+      }
+    } catch (error) {
+      results.getMfeApiCredentials = { available: true, error: error };
+    }
+
+    // 测试方式2: hostSharedData
+    try {
+      if ((window as any).hostSharedData?.apiCredentials) {
+        const creds2 = (window as any).hostSharedData.apiCredentials;
+        results.hostSharedData = {
+          available: true,
+          hasToken: !!creds2?.accessToken,
+          tokenPreview: creds2?.accessToken?.substring(0, 20) + '...' || 'N/A'
+        };
+      } else {
+        results.hostSharedData = { available: false };
+      }
+    } catch (error) {
+      results.hostSharedData = { available: true, error: error };
+    }
+
+    // 测试方式3: 服务中的数据
+    try {
+      const creds3 = this.hostDataService.getApiCredentials();
+      results.serviceData = {
+        available: !!creds3,
+        hasToken: !!creds3?.accessToken,
+        tokenPreview: creds3?.accessToken?.substring(0, 20) + '...' || 'N/A'
+      };
+    } catch (error) {
+      results.serviceData = { error: error };
+    }
+
+    // 测试方式4: 刷新函数
+    try {
+      if ((window as any).refreshMfeApiCredentials) {
+        console.log('🔄 尝试调用刷新函数...');
+        const creds4 = await (window as any).refreshMfeApiCredentials();
+        results.refreshFunction = {
+          available: true,
+          hasToken: !!creds4?.accessToken,
+          tokenPreview: creds4?.accessToken?.substring(0, 20) + '...' || 'N/A'
+        };
+      } else {
+        results.refreshFunction = { available: false };
+      }
+    } catch (error) {
+      results.refreshFunction = { available: true, error: error };
+    }
+
+    console.log('📊 所有 Token 获取方式测试结果:', results);
+    
+    // 生成报告
+    let report = '🔍 Access Token 获取方式测试报告:\n\n';
+    Object.entries(results).forEach(([method, result]: [string, any]) => {
+      report += `${method}:\n`;
+      if (result.available === false) {
+        report += '  ❌ 不可用\n';
+      } else if (result.error) {
+        report += `  ❌ 错误: ${result.error}\n`;
+      } else if (result.hasToken) {
+        report += `  ✅ 有Token: ${result.tokenPreview}\n`;
+      } else {
+        report += '  ⚠️ 可用但无Token\n';
+      }
+      report += '\n';
+    });
+    
+    alert(report + '详细信息请查看控制台');
+  }
+
+  /**
    * 获取测试结果标题
    */
   getTestResultTitle(key: string): string {
     const titleMap: { [key: string]: string } = {
       'credentialsTest': '🔑 API凭据获取测试',
       'connectionTest': '🌐 API连接测试',
-      'refreshTest': '🔄 API凭据刷新测试'
+      'refreshTest': '🔄 API凭据刷新测试',
+      'secureStorageTest': '🔧 SecureStorage测试'
     };
     
     return titleMap[key] || `📊 ${key} 测试`;
@@ -321,5 +477,96 @@ export class TestHostDataComponent implements OnInit, OnDestroy {
    */
   getTestResultEntries(): Array<{key: string, value: any}> {
     return Object.entries(this.apiTestResults).map(([key, value]) => ({key, value}));
+  }
+
+  /**
+   * 🔧 测试SecureStorage功能
+   */
+  async testSecureStorage() {
+    this.isLoading = true;
+    try {
+      console.log('🔧 测试SecureStorage功能...');
+      
+      // 检查状态
+      const status = await this.authenticatedApiService.getSecureStorageCredentialsStatus();
+      console.log('📊 SecureStorage状态:', status);
+      
+      this.apiTestResults.secureStorageTest = {
+        success: true,
+        status: status,
+        timestamp: new Date().toISOString()
+      };
+      
+      alert(`SecureStorage测试完成！\n可用: ${status.available}\n有Token: ${status.hasAccessToken}\n来源: ${status.source}`);
+      
+    } catch (error) {
+      console.error('❌ SecureStorage测试失败:', error);
+      this.apiTestResults.secureStorageTest = {
+        success: false,
+        error: error,
+        timestamp: new Date().toISOString()
+      };
+      alert(`SecureStorage测试失败: ${error}`);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 🔧 设置测试凭据到SecureStorage
+   */
+  async setTestCredentialsToSecureStorage() {
+    const accessToken = prompt('请输入Access Token:');
+    const xApiKey = prompt('请输入X-API-Key:');
+    const baseUrlBFF = prompt('请输入Base URL (可选):', 'https://api.example.com');
+    
+    if (!accessToken || !xApiKey) {
+      alert('❌ Access Token和X-API-Key都是必需的');
+      return;
+    }
+    
+    this.isLoading = true;
+    try {
+      await this.authenticatedApiService.setApiCredentialsToSecureStorage({
+        accessToken,
+        xApiKey,
+        baseUrlBFF: baseUrlBFF || undefined
+      });
+      
+      alert('✅ 测试凭据已保存到SecureStorage');
+      
+      // 重新测试状态
+      await this.testSecureStorage();
+      
+    } catch (error) {
+      console.error('❌ 保存测试凭据失败:', error);
+      alert(`保存失败: ${error}`);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 🧹 清除SecureStorage凭据
+   */
+  async clearSecureStorageCredentials() {
+    if (!confirm('确定要清除SecureStorage中的所有API凭据吗？')) {
+      return;
+    }
+    
+    this.isLoading = true;
+    try {
+      await this.authenticatedApiService.clearSecureStorageCredentials();
+      alert('✅ SecureStorage凭据已清除');
+      
+      // 重新测试状态
+      await this.testSecureStorage();
+      
+    } catch (error) {
+      console.error('❌ 清除凭据失败:', error);
+      alert(`清除失败: ${error}`);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

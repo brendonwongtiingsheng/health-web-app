@@ -457,4 +457,104 @@ export class HostDataService {
       }
     }, intervalMs);
   }
+
+  /**
+   * 🔍 调试方法：详细检查所有可能的 access token 来源
+   */
+  debugAccessToken(): void {
+    console.log('🔍 ===== ACCESS TOKEN 调试信息 =====');
+    
+    // 1. 检查 window.getMfeApiCredentials
+    console.log('1️⃣ 检查 window.getMfeApiCredentials:');
+    if ((window as any).getMfeApiCredentials) {
+      console.log('   ✅ 函数存在');
+      try {
+        const credentials = (window as any).getMfeApiCredentials();
+        console.log('   📋 返回的凭据:', credentials);
+        if (credentials?.accessToken) {
+          console.log('   🔑 Access Token:', credentials.accessToken.substring(0, 50) + '...');
+          console.log('   ⏰ Token长度:', credentials.accessToken.length);
+        } else {
+          console.log('   ❌ 没有 accessToken');
+        }
+      } catch (error) {
+        console.log('   ❌ 调用失败:', error);
+      }
+    } else {
+      console.log('   ❌ 函数不存在');
+    }
+
+    // 2. 检查 window.hostSharedData
+    console.log('2️⃣ 检查 window.hostSharedData:');
+    if ((window as any).hostSharedData) {
+      console.log('   ✅ 对象存在');
+      console.log('   📋 完整数据:', (window as any).hostSharedData);
+      if ((window as any).hostSharedData.apiCredentials) {
+        console.log('   ✅ apiCredentials 存在');
+        const creds = (window as any).hostSharedData.apiCredentials;
+        if (creds.accessToken) {
+          console.log('   🔑 Access Token:', creds.accessToken.substring(0, 50) + '...');
+          console.log('   ⏰ Token长度:', creds.accessToken.length);
+        } else {
+          console.log('   ❌ 没有 accessToken');
+        }
+      } else {
+        console.log('   ❌ 没有 apiCredentials');
+      }
+    } else {
+      console.log('   ❌ 对象不存在');
+    }
+
+    // 3. 检查当前服务中的数据
+    console.log('3️⃣ 检查当前服务数据:');
+    const currentData = this.getHostData();
+    console.log('   📋 当前Host数据:', currentData);
+    const currentCreds = this.getApiCredentials();
+    if (currentCreds) {
+      console.log('   ✅ 服务中有API凭据');
+      if (currentCreds.accessToken) {
+        console.log('   🔑 Access Token:', currentCreds.accessToken.substring(0, 50) + '...');
+        console.log('   ⏰ Token长度:', currentCreds.accessToken.length);
+      } else {
+        console.log('   ❌ 服务中没有 accessToken');
+      }
+    } else {
+      console.log('   ❌ 服务中没有API凭据');
+    }
+
+    // 4. 检查刷新函数
+    console.log('4️⃣ 检查 window.refreshMfeApiCredentials:');
+    if ((window as any).refreshMfeApiCredentials) {
+      console.log('   ✅ 刷新函数存在');
+      console.log('   💡 可以尝试调用刷新函数获取新token');
+    } else {
+      console.log('   ❌ 刷新函数不存在');
+    }
+
+    // 5. 检查其他可能的位置
+    console.log('5️⃣ 检查其他可能位置:');
+    console.log('   window.mfeSharedDataService:', (window as any).mfeSharedDataService);
+    console.log('   window.hostData:', (window as any).hostData);
+    console.log('   window.apiCredentials:', (window as any).apiCredentials);
+
+    console.log('🔍 ===== 调试信息结束 =====');
+  }
+
+  /**
+   * 🔍 获取完整的 access token（用于调试）
+   */
+  async getFullAccessTokenForDebug(): Promise<string | null> {
+    try {
+      const credentials = await this.getApiCredentialsFromHost();
+      if (credentials?.accessToken) {
+        console.log('🔑 完整的 Access Token:', credentials.accessToken);
+        return credentials.accessToken;
+      }
+      console.log('❌ 没有找到 Access Token');
+      return null;
+    } catch (error) {
+      console.error('❌ 获取 Access Token 失败:', error);
+      return null;
+    }
+  }
 }

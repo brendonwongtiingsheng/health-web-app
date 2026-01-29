@@ -117,9 +117,35 @@
         
         <button 
           class="test-btn success" 
-          (click)="testCertificateEligibility()" 
+          (click)="testGetInsured()" 
           [disabled]="isLoading || !testPolicyNumber">
-          🏥 验证证书资格 (你的原始API)
+          👤 获取被保险人信息
+        </button>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h4>SecureStorage 测试</h4>
+      <div class="button-group">
+        <button 
+          class="test-btn info" 
+          (click)="testSecureStorage()" 
+          [disabled]="isLoading">
+          🔧 测试SecureStorage状态
+        </button>
+        
+        <button 
+          class="test-btn secondary" 
+          (click)="setTestCredentialsToSecureStorage()" 
+          [disabled]="isLoading">
+          💾 设置测试凭据
+        </button>
+        
+        <button 
+          class="test-btn danger" 
+          (click)="clearSecureStorageCredentials()" 
+          [disabled]="isLoading">
+          🧹 清除SecureStorage凭据
         </button>
       </div>
     </div>
@@ -131,6 +157,24 @@
           class="test-btn info" 
           (click)="showDebugInfo()">
           🐛 显示调试信息
+        </button>
+        
+        <button 
+          class="test-btn info" 
+          (click)="debugAccessToken()">
+          🔍 调试 Access Token
+        </button>
+        
+        <button 
+          class="test-btn info" 
+          (click)="showFullAccessToken()">
+          🔑 显示完整 Token
+        </button>
+        
+        <button 
+          class="test-btn info" 
+          (click)="testAllTokenSources()">
+          🧪 测试所有Token来源
         </button>
         
         <button 
@@ -158,9 +202,9 @@
   <div class="test-results" *ngIf="hasTestResults()">
     <h3>📊 测试结果</h3>
 
-    <!-- 证书资格验证结果 -->
+    <!-- 被保险人信息获取结果 -->
     <div class="result-card" *ngIf="certificateTestResult">
-      <h4>🏥 证书资格验证结果</h4>
+      <h4>👤 被保险人信息获取结果</h4>
       <div class="result-header">
         <span [class]="certificateTestResult.success ? 'result-success' : 'result-error'">
           {{ certificateTestResult.success ? '✅ 成功' : '❌ 失败' }}
@@ -220,7 +264,8 @@
         <li><strong>刷新数据:</strong> 如果数据不完整，点击"刷新Host数据"重新获取</li>
         <li><strong>测试凭据:</strong> 点击"测试凭据获取"验证能否从Host获取API凭据</li>
         <li><strong>测试连接:</strong> 点击"测试API连接"验证API服务是否可用</li>
-        <li><strong>调用API:</strong> 输入保单号，点击"验证证书资格"测试你的原始API调用</li>
+        <li><strong>SecureStorage:</strong> 测试本地安全存储功能，可以手动设置测试凭据</li>
+        <li><strong>调用API:</strong> 输入保单号，点击"获取被保险人信息"测试你的API调用（现在支持SecureStorage）</li>
         <li><strong>处理错误:</strong> 如果遇到401错误，点击"刷新API凭据"然后重试</li>
         <li><strong>调试问题:</strong> 使用"显示调试信息"和"导出测试数据"来分析问题</li>
       </ol>
@@ -228,9 +273,22 @@
       <div class="important-note">
         <strong>⚠️ 重要提示:</strong>
         <ul>
+          <li>API现在支持从SecureStorage和Host两种方式获取凭据</li>
+          <li>在移动端环境中会优先使用SecureStorage</li>
+          <li>在Web环境中SecureStorage会fallback到localStorage</li>
           <li>确保Host应用已正确设置API凭据</li>
           <li>检查浏览器控制台获取详细日志信息</li>
           <li>如果API调用失败，检查网络连接和API服务状态</li>
+        </ul>
+      </div>
+
+      <div class="api-changes">
+        <strong>🔄 API变更说明:</strong>
+        <ul>
+          <li>API端点已更改为: <code>/v1/policies/insured</code></li>
+          <li>支持SecureStorage凭据获取</li>
+          <li>自动token刷新和重试机制</li>
+          <li>30秒请求超时设置</li>
         </ul>
       </div>
     </div>

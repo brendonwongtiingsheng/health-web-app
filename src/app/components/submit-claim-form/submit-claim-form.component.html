@@ -235,10 +235,10 @@
 
             <button 
               class="api-test-btn" 
-              (click)="verifyCertEligibility()"
+              (click)="getInsured()"
               [disabled]="isLoadingApiData"
               style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #28a745; background: white; color: #28a745; border-radius: 4px; cursor: pointer;">
-              {{ isLoadingApiData ? '验证中...' : '验证证书资格' }}
+              {{ isLoadingApiData ? '获取中...' : '获取被保险人信息' }}
             </button>
 
             <button 
@@ -271,14 +271,14 @@
           </div>
 
           <!-- API结果显示 -->
-          <div class="api-results" *ngIf="certificateEligibilityResult || apiTestResult" style="margin-top: 1rem; padding: 0.5rem; background: white; border-radius: 4px; font-size: 0.8rem;">
-            <div *ngIf="certificateEligibilityResult" style="margin-bottom: 0.5rem;">
-              <strong>证书资格验证结果:</strong>
-              <div [style.color]="certificateEligibilityResult.error ? '#dc3545' : '#28a745'">
-                {{ certificateEligibilityResult.error ? '❌ 失败' : '✅ 成功' }}
+          <div class="api-results" *ngIf="insuredInfoResult || apiTestResult" style="margin-top: 1rem; padding: 0.5rem; background: white; border-radius: 4px; font-size: 0.8rem;">
+            <div *ngIf="insuredInfoResult" style="margin-bottom: 0.5rem;">
+              <strong>获取被保险人信息结果:</strong>
+              <div [style.color]="insuredInfoResult.error ? '#dc3545' : '#28a745'">
+                {{ insuredInfoResult.error ? '❌ 失败' : '✅ 成功' }}
               </div>
-              <div *ngIf="certificateEligibilityResult.message" style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">
-                {{ certificateEligibilityResult.message }}
+              <div *ngIf="insuredInfoResult.message" style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">
+                {{ insuredInfoResult.message }}
               </div>
             </div>
 
@@ -298,7 +298,7 @@
             <strong>使用说明:</strong>
             <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
               <li>首先点击"检查凭据状态"确认Host已传递API凭据</li>
-              <li>点击"验证证书资格"测试你的原始API调用</li>
+              <li>点击"获取被保险人信息"测试你的API调用</li>
               <li>如果遇到401错误，点击"刷新凭据"</li>
               <li>查看浏览器控制台获取详细日志信息</li>
             </ol>

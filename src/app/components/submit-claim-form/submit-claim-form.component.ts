@@ -33,7 +33,7 @@ export class SubmitClaimFormComponent implements OnInit {
   isLoadingApiData: boolean = false;
   apiTestResult: any = null;
   apiCredentialsStatus: any = null;
-  certificateEligibilityResult: any = null;
+  insuredInfoResult: any = null;
 
   selectedFormCategory: FormCategory = 'brain'; // Default to brain category
 
@@ -1007,11 +1007,11 @@ export class SubmitClaimFormComponent implements OnInit {
   }
 
   /**
-   * 验证证书资格 - 这是你原始的verifyCertEligibility方法的实现
+   * 获取被保险人信息 - 这是你原始的getInsured方法的实现
    */
-  async verifyCertEligibility(policyNo?: string) {
+  async getInsured(policyNo?: string) {
     try {
-      console.log('🔍 开始验证证书资格...');
+      console.log('🔍 开始获取被保险人信息...');
       this.isLoadingApiData = true;
       
       // 使用默认保单号或用户输入的保单号
@@ -1020,17 +1020,17 @@ export class SubmitClaimFormComponent implements OnInit {
       console.log('📋 使用保单号:', testPolicyNo);
       
       // 调用认证API服务
-      this.certificateEligibilityResult = await this.authenticatedApiService.verifyCertEligibility(testPolicyNo);
+      this.insuredInfoResult = await this.authenticatedApiService.getInsured(testPolicyNo);
       
-      console.log('✅ 证书资格验证成功:', this.certificateEligibilityResult);
+      console.log('✅ 获取被保险人信息成功:', this.insuredInfoResult);
       
       // 可以在这里处理API响应，比如更新UI状态
-      alert('证书资格验证成功！请查看控制台了解详细信息。');
+      alert('获取被保险人信息成功！请查看控制台了解详细信息。');
       
     } catch (error) {
-      console.error('❌ 证书资格验证失败:', error);
+      console.error('❌ 获取被保险人信息失败:', error);
       
-      this.certificateEligibilityResult = {
+      this.insuredInfoResult = {
         error: true,
         message: error instanceof Error ? error.message : '未知错误',
         details: error
@@ -1046,7 +1046,7 @@ export class SubmitClaimFormComponent implements OnInit {
           alert(`API调用失败: ${error.message}`);
         }
       } else {
-        alert('证书资格验证失败，请稍后重试。');
+        alert('获取被保险人信息失败，请稍后重试。');
       }
       
     } finally {
@@ -1108,7 +1108,7 @@ export class SubmitClaimFormComponent implements OnInit {
       hostData: hostStatus,
       apiCredentialsStatus: this.apiCredentialsStatus,
       apiTestResult: this.apiTestResult,
-      certificateResult: this.certificateEligibilityResult
+      insuredInfoResult: this.insuredInfoResult
     };
     
     console.log('🐛 API调试信息:', debugInfo);
@@ -1124,7 +1124,7 @@ export class SubmitClaimFormComponent implements OnInit {
   resetApiStatus() {
     this.apiTestResult = null;
     this.apiCredentialsStatus = null;
-    this.certificateEligibilityResult = null;
+    this.insuredInfoResult = null;
     this.isLoadingApiData = false;
     console.log('🔄 API状态已重置');
   }

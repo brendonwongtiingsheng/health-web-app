@@ -2,7 +2,7 @@
 
 ## 🎯 Overview
 
-This MFE (Micro Frontend) now supports receiving access tokens from the Host application and calling authenticated APIs using the original `verifyCertEligibility` method.
+This MFE (Micro Frontend) now supports receiving access tokens from the Host application and calling authenticated APIs using the `getInsured` method with SecureStorage support.
 
 ## 🏗️ Architecture
 
@@ -24,14 +24,15 @@ Backend API Server
    - Multiple fallback methods for credential retrieval
 
 2. **AuthenticatedApiService** - New service for API calls
-   - `verifyCertEligibility(policyNo)` - Your original API method
+   - `getInsured(policyNo)` - Get insured information with SecureStorage support
    - `callAuthenticatedApi()` - Generic authenticated API caller
    - Automatic 401 error handling with token refresh
+   - SecureStorage integration with localStorage fallback
 
 3. **TestHostDataComponent** - Comprehensive testing interface
    - Test API credential retrieval
    - Test API connection
-   - Test certificate eligibility verification
+   - Test insured information retrieval
    - Debug and export functionality
 
 4. **Integration in SubmitClaimFormComponent**
@@ -49,7 +50,7 @@ Navigate to `/test-host-data` or click the "🧪 Test API Integration" button on
 1. **Check Status**: View Host data and API credentials status
 2. **Test Credentials**: Verify credential retrieval from Host
 3. **Test Connection**: Check API service availability
-4. **Test Certificate API**: Call your original `verifyCertEligibility` method
+4. **Test Insured API**: Call the `getInsured` method
 
 ### 3. Use in Your Code
 
@@ -57,10 +58,10 @@ Navigate to `/test-host-data` or click the "🧪 Test API Integration" button on
 // Inject the service
 constructor(private authenticatedApiService: AuthenticatedApiService) {}
 
-// Call your original API method
-async testCertificate() {
+// Call the API method
+async testInsured() {
   try {
-    const result = await this.authenticatedApiService.verifyCertEligibility('POLICY123');
+    const result = await this.authenticatedApiService.getInsured('POLICY123');
     console.log('API Result:', result);
   } catch (error) {
     console.error('API Error:', error);
@@ -96,14 +97,14 @@ interface ApiCredentials {
 - 📊 Real-time status monitoring
 - 🔑 API credential testing
 - 🌐 Connection testing
-- 🏥 Certificate eligibility testing
+- 👤 Insured information retrieval testing
 - 🐛 Debug information export
 - 📁 Test data export
 
 **Test Scenarios:**
 1. **Credential Retrieval**: Tests all fallback methods
 2. **API Connection**: Validates credentials and connectivity
-3. **Certificate API**: Calls your original `verifyCertEligibility` method
+3. **Insured API**: Calls the `getInsured` method
 4. **Token Refresh**: Tests automatic token refresh on 401 errors
 
 ## 🔄 Error Handling
@@ -131,18 +132,21 @@ Set `showDebugOptions = false` to hide debug features.
 
 ## 📝 API Method Details
 
-### `verifyCertEligibility(policyNo: string)`
+### `getInsured(policyNo: string)`
 
-This is your original API method, now enhanced with:
+This method retrieves insured information with enhanced features:
+- SecureStorage integration for mobile environments
+- localStorage fallback for web environments
 - Host credential integration
 - Automatic token refresh
 - Error handling
 - Logging
 
-**Original Implementation Preserved:**
-- Same endpoint: `/v2/policies/{policyNo}/certificate`
-- Same headers: Authorization, x-api-key, security headers
-- Same request structure
+**Implementation Details:**
+- Endpoint: `/v1/policies/insured`
+- Headers: Authorization, x-api-key, security headers
+- Timeout: 30 seconds
+- Storage: SecureStorage with localStorage fallback
 
 ## 🐛 Debugging
 
@@ -162,6 +166,7 @@ All services provide detailed console logging:
 ## 🔒 Security Considerations
 
 - Credentials only passed in memory (not localStorage)
+- SecureStorage used for sensitive data in mobile environments
 - Automatic token refresh prevents expired token issues
 - Secure headers included in all requests
 - No credential storage in MFE
@@ -210,4 +215,4 @@ For issues or questions:
 
 **Status**: ✅ Implementation Complete
 **Last Updated**: January 2026
-**Version**: 1.0.0
+**Version**: 1.1.0
