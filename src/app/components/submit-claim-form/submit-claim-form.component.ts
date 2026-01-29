@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HostDataService } from '../../services/host-data.service';
+import { AuthenticatedApiService } from '../../services/authenticated-api.service';
 
 type FormCategory = 'aps' | 'brain' | 'cancer' | 'heart' | 'kidney' | 'liver' | 'lung';
 
@@ -26,6 +28,12 @@ export class SubmitClaimFormComponent implements OnInit {
   showDownloadableFormsModal: boolean = false;
   isDownloadableFormsExpanded: boolean = false;
   isDocumentEditMode: boolean = false; // New property for document edit mode
+
+  // API相关状态
+  isLoadingApiData: boolean = false;
+  apiTestResult: any = null;
+  apiCredentialsStatus: any = null;
+  certificateEligibilityResult: any = null;
 
   selectedFormCategory: FormCategory = 'brain'; // Default to brain category
 
@@ -172,11 +180,18 @@ export class SubmitClaimFormComponent implements OnInit {
     { id: 'death', name: 'Death', icon: '🔒' }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private hostDataService: HostDataService,
+    private authenticatedApiService: AuthenticatedApiService
+  ) {}
 
   ngOnInit() {
     // 确保每次进入表单时都是干净的状态
     this.resetAllData();
+    
+    // 初始化时检查API凭据状态
+    this.checkApiCredentialsStatus();
   }
 
   toggleInformation() {
@@ -946,5 +961,171 @@ export class SubmitClaimFormComponent implements OnInit {
   saveClaimEventInfo() {
     // Validation would go here based on claim type
     this.closeClaimEventInfoEditModal();
+  }
+
+  // ==================== API 相关方法 ====================
+
+  /**
+   * 检查API凭据状态
+   */
+  async checkApiCredentialsStatus() {
+    try {
+      console.log('🔍 检查API凭据状态...');
+      this.apiCredentialsStatus = await this.authenticatedApiService.getApiCredentialsStatus();
+      console.log('📊 API凭据状态:', this.apiCredentialsStatus);
+    } catch (error) {
+      console.error('❌ 检查API凭据状态失败:', error);
+      this.apiCredentialsStatus = {
+        available: false,
+        hasAccessToken: false,
+        hasXApiKey: false,
+        hasBaseUrl: false,
+        error: error
+      };
+    }
+  }
+
+  /**
+   * 测试API连接
+   */
+  async testApiConnection() {
+    try {
+      console.log('🧪 测试API连接...');
+      this.isLoadingApiData = true;
+      this.apiTestResult = await this.authenticatedApiService.testApiConnection();
+      console.log('📊 API连接测试结果:', this.apiTestResult);
+    } catch (error) {
+      console.error('❌ API连接测试失败:', error);
+      this.apiTestResult = {
+        success: false,
+        message: `API连接测试失败: ${error}`,
+        details: error
+      };
+    } finally {
+      this.isLoadingApiData = false;
+    }
+  }
+
+  /**
+   * 验证证书资格 - 这是你原始的verifyCertEligibility方法的实现
+   */
+  async verifyCertEligibility(policyNo?: string) {
+    try {
+      console.log('🔍 开始验证证书资格...');
+      this.isLoadingApiData = true;
+      
+      // 使用默认保单号或用户输入的保单号
+      const testPolicyNo = policyNo || 'POLICY123456';
+      
+      console.log('📋 使用保单号:', testPolicyNo);
+      
+      // 调用认证API服务
+      this.certificateEligibilityResult = await this.authenticatedApiService.verifyCertEligibility(testPolicyNo);
+      
+      console.log('✅ 证书资格验证成功:', this.certificateEligibilityResult);
+      
+      // 可以在这里处理API响应，比如更新UI状态
+      alert('证书资格验证成功！请查看控制台了解详细信息。');
+      
+    } catch (error) {
+      console.error('❌ 证书资格验证失败:', error);
+      
+      this.certificateEligibilityResult = {
+        error: true,
+        message: error instanceof Error ? error.message : '未知错误',
+        details: error
+      };
+      
+      // 显示用户友好的错误信息
+      if (error instanceof Error) {
+        if (error.message.includes('无法从Host应用获取API凭据')) {
+          alert('无法获取API凭据。请确保您已从Host应用正确登录。');
+        } else if (error.message.includes('401')) {
+          alert('认证失败。您的登录可能已过期，请重新登录。');
+        } else {
+          alert(`API调用失败: ${error.message}`);
+        }
+      } else {
+        alert('证书资格验证失败，请稍后重试。');
+      }
+      
+    } finally {
+      this.isLoadingApiData = false;
+    }
+  }
+
+  /**
+   * 刷新API凭据
+   */
+  async refreshApiCredentials() {
+    try {
+      console.log('🔄 刷新API凭据...');
+      this.isLoadingApiData = true;
+      
+      const refreshedCredentials = await this.hostDataService.refreshApiCredentialsFromHost();
+      
+      if (refreshedCredentials) {
+        console.log('✅ API凭据刷新成功');
+        alert('API凭据已成功刷新！');
+        // 重新检查状态
+        await this.checkApiCredentialsStatus();
+      } else {
+        console.warn('⚠️ API凭据刷新失败');
+        alert('API凭据刷新失败，请稍后重试。');
+      }
+      
+    } catch (error) {
+      console.error('❌ 刷新API凭据失败:', error);
+      alert(`刷新API凭据失败: ${error}`);
+    } finally {
+      this.isLoadingApiData = false;
+    }
+  }
+
+  /**
+   * 获取Host数据状态
+   */
+  getHostDataStatus() {
+    const hostData = this.hostDataService.getHostData();
+    console.log('📊 当前Host数据:', hostData);
+    
+    return {
+      hasUserId: !!hostData.userId,
+      hasUserProfile: !!hostData.userProfile,
+      hasApiCredentials: !!hostData.apiCredentials,
+      hasSessionData: !!hostData.sessionData,
+      data: hostData
+    };
+  }
+
+  /**
+   * 显示API调试信息
+   */
+  showApiDebugInfo() {
+    const hostStatus = this.getHostDataStatus();
+    
+    const debugInfo = {
+      hostData: hostStatus,
+      apiCredentialsStatus: this.apiCredentialsStatus,
+      apiTestResult: this.apiTestResult,
+      certificateResult: this.certificateEligibilityResult
+    };
+    
+    console.log('🐛 API调试信息:', debugInfo);
+    
+    // 在页面上显示调试信息
+    const debugText = JSON.stringify(debugInfo, null, 2);
+    alert(`API调试信息（详细信息请查看控制台）:\n\n${debugText.substring(0, 500)}...`);
+  }
+
+  /**
+   * 重置API状态
+   */
+  resetApiStatus() {
+    this.apiTestResult = null;
+    this.apiCredentialsStatus = null;
+    this.certificateEligibilityResult = null;
+    this.isLoadingApiData = false;
+    console.log('🔄 API状态已重置');
   }
 }

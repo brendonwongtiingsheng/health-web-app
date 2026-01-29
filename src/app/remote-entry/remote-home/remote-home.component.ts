@@ -22,6 +22,9 @@ export class RemoteHomeComponent extends HostDataMixin implements OnInit {
   // 组件特定的属性
   userInfo: any = {};
   currentLanguage: string = 'en';
+  
+  // Debug options - show in development mode
+  showDebugOptions: boolean = true; // Set to false in production
 
   constructor(
     private router: Router,
@@ -97,5 +100,13 @@ export class RemoteHomeComponent extends HostDataMixin implements OnInit {
     // 你可以换成实际路由 or 外链
     // this.router.navigateByUrl('/testimonials');
     window.open('https://www.youtube.com/', '_blank');
+  }
+
+  /**
+   * 导航到API测试页面
+   */
+  onTestHostData() {
+    console.log('🧪 导航到API测试页面');
+    this.router.navigate(['/test-host-data']);
   }
 }

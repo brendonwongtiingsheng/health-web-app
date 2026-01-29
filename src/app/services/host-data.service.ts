@@ -11,6 +11,15 @@ export interface UserProfile {
   [key: string]: any;
 }
 
+export interface ApiCredentials {
+  accessToken: string;
+  xApiKey: string;
+  baseUrlBFF: string;
+  refreshToken?: string;
+  tokenExpiry?: string;
+  [key: string]: any;
+}
+
 export interface HostData {
   userId?: string;
   userProfile?: UserProfile;
@@ -20,6 +29,7 @@ export interface HostData {
   pageContext?: string;
   timestamp?: string;
   claimData?: any;
+  apiCredentials?: ApiCredentials;
   [key: string]: any;
 }
 
@@ -215,6 +225,7 @@ export class HostDataService {
     if (data.pageContext) normalized.pageContext = data.pageContext;
     if (data.timestamp) normalized.timestamp = data.timestamp;
     if (data.claimData) normalized.claimData = data.claimData;
+    if (data.apiCredentials) normalized.apiCredentials = data.apiCredentials;
 
     // 保留其他所有字段
     Object.keys(data).forEach(key => {
@@ -287,10 +298,86 @@ export class HostDataService {
   }
 
   /**
-   * 获取时间戳
+   * 获取API凭据
    */
-  getTimestamp(): string | null {
-    return this.hostDataSubject.value.timestamp || null;
+  getApiCredentials(): ApiCredentials | null {
+    return this.hostDataSubject.value.apiCredentials || null;
+  }
+
+  /**
+   * 从Host应用获取API凭据
+   * 支持多种获取方式以确保兼容性
+   */
+  async getApiCredentialsFromHost(): Promise<ApiCredentials | null> {
+    try {
+      console.log('🔑 尝试从Host获取API凭据...');
+      
+      // 方法1: 使用专用的API凭据方法
+      if ((window as any).getMfeApiCredentials) {
+        const credentials = (window as any).getMfeApiCredentials();
+        if (credentials && credentials.accessToken) {
+          console.log('✅ 从Host getMfeApiCredentials()获取到凭据');
+          return credentials;
+        }
+      }
+      
+      // 方法2: 从共享数据获取
+      if ((window as any).hostSharedData?.apiCredentials) {
+        const credentials = (window as any).hostSharedData.apiCredentials;
+        if (credentials && credentials.accessToken) {
+          console.log('✅ 从Host hostSharedData获取到凭据');
+          return credentials;
+        }
+      }
+      
+      // 方法3: 从当前服务的数据获取
+      const currentCredentials = this.getApiCredentials();
+      if (currentCredentials && currentCredentials.accessToken) {
+        console.log('✅ 从当前服务数据获取到凭据');
+        return currentCredentials;
+      }
+      
+      // 方法4: 尝试刷新凭据
+      if ((window as any).refreshMfeApiCredentials) {
+        console.log('🔄 尝试刷新API凭据...');
+        const credentials = await (window as any).refreshMfeApiCredentials();
+        if (credentials && credentials.accessToken) {
+          console.log('✅ 刷新后获取到凭据');
+          return credentials;
+        }
+      }
+      
+      console.warn('⚠️ 无法从Host获取API凭据');
+      return null;
+    } catch (error) {
+      console.error('❌ 获取API凭据时出错:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 刷新API凭据
+   */
+  async refreshApiCredentialsFromHost(): Promise<ApiCredentials | null> {
+    try {
+      console.log('🔄 尝试刷新Host API凭据...');
+      
+      if ((window as any).refreshMfeApiCredentials) {
+        const credentials = await (window as any).refreshMfeApiCredentials();
+        if (credentials && credentials.accessToken) {
+          console.log('✅ API凭据刷新成功');
+          // 更新本地数据
+          this.updateHostData({ apiCredentials: credentials });
+          return credentials;
+        }
+      }
+      
+      console.warn('⚠️ 无法刷新API凭据');
+      return null;
+    } catch (error) {
+      console.error('❌ 刷新API凭据时出错:', error);
+      return null;
+    }
   }
 
   /**

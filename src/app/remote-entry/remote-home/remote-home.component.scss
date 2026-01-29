@@ -278,3 +278,37 @@
   .banner img { height: 150px; }
   .card { grid-template-columns: 52px 1fr 40px; }
 }
+
+/* Debug section styles */
+.debug-section {
+  padding: 6px 12px 24px;
+  border-top: 2px dashed #e5e7eb;
+  margin-top: 20px;
+  
+  .section-title {
+    color: #f59e0b;
+    font-weight: 800;
+  }
+  
+  .card {
+    border: 2px dashed #f59e0b;
+    background: #fffbeb;
+    
+    &:hover {
+      background: #fef3c7;
+    }
+    
+    .card-title {
+      color: #d97706;
+    }
+    
+    .card-desc {
+      color: #92400e;
+    }
+    
+    .arrow-circle {
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+  }
+}

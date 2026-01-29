@@ -1,0 +1,238 @@
+<div class="test-host-data-container">
+  <div class="test-header">
+    <h1>🧪 MFE API集成测试</h1>
+    <p>测试从Host应用获取access token并调用API的功能</p>
+  </div>
+
+  <!-- 状态概览 -->
+  <div class="status-overview">
+    <div class="status-card">
+      <h3>📊 Host数据状态</h3>
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-label">用户ID:</span>
+          <span [class]="hostData.userId ? 'status-success' : 'status-error'">
+            {{ hostData.userId ? '✅ ' + hostData.userId : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">用户配置:</span>
+          <span [class]="hostData.userProfile ? 'status-success' : 'status-error'">
+            {{ hostData.userProfile ? '✅ 已获取' : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">API凭据:</span>
+          <span [class]="hostData.apiCredentials ? 'status-success' : 'status-error'">
+            {{ hostData.apiCredentials ? '✅ 已获取' : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">会话数据:</span>
+          <span [class]="hostData.sessionData ? 'status-success' : 'status-error'">
+            {{ hostData.sessionData ? '✅ 已获取' : '❌ 未获取' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-card" *ngIf="apiCredentials">
+      <h3>🔑 API凭据详情</h3>
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-label">Access Token:</span>
+          <span [class]="apiCredentials.accessToken ? 'status-success' : 'status-error'">
+            {{ apiCredentials.accessToken ? '✅ 已获取 (' + apiCredentials.accessToken.substring(0, 20) + '...)' : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">X-API-Key:</span>
+          <span [class]="apiCredentials.xApiKey ? 'status-success' : 'status-error'">
+            {{ apiCredentials.xApiKey ? '✅ 已获取' : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Base URL:</span>
+          <span [class]="apiCredentials.baseUrlBFF ? 'status-success' : 'status-error'">
+            {{ apiCredentials.baseUrlBFF ? '✅ ' + apiCredentials.baseUrlBFF : '❌ 未获取' }}
+          </span>
+        </div>
+        <div class="status-item" *ngIf="apiCredentials.tokenExpiry">
+          <span class="status-label">Token过期时间:</span>
+          <span class="status-info">{{ apiCredentials.tokenExpiry }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 测试控制面板 -->
+  <div class="test-controls">
+    <h3>🎮 测试控制面板</h3>
+    
+    <div class="control-section">
+      <h4>基础测试</h4>
+      <div class="button-group">
+        <button 
+          class="test-btn primary" 
+          (click)="refreshHostData()" 
+          [disabled]="isLoading">
+          🔄 刷新Host数据
+        </button>
+        
+        <button 
+          class="test-btn secondary" 
+          (click)="testApiCredentials()" 
+          [disabled]="isLoading">
+          🔑 测试凭据获取
+        </button>
+        
+        <button 
+          class="test-btn secondary" 
+          (click)="testApiConnection()" 
+          [disabled]="isLoading">
+          🌐 测试API连接
+        </button>
+        
+        <button 
+          class="test-btn warning" 
+          (click)="refreshApiCredentials()" 
+          [disabled]="isLoading">
+          🔄 刷新API凭据
+        </button>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h4>API调用测试</h4>
+      <div class="api-test-section">
+        <div class="input-group">
+          <label for="policyNumber">保单号:</label>
+          <input 
+            id="policyNumber"
+            type="text" 
+            [(ngModel)]="testPolicyNumber" 
+            placeholder="输入测试保单号"
+            class="policy-input">
+        </div>
+        
+        <button 
+          class="test-btn success" 
+          (click)="testCertificateEligibility()" 
+          [disabled]="isLoading || !testPolicyNumber">
+          🏥 验证证书资格 (你的原始API)
+        </button>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h4>调试工具</h4>
+      <div class="button-group">
+        <button 
+          class="test-btn info" 
+          (click)="showDebugInfo()">
+          🐛 显示调试信息
+        </button>
+        
+        <button 
+          class="test-btn info" 
+          (click)="exportTestData()">
+          📁 导出测试数据
+        </button>
+        
+        <button 
+          class="test-btn danger" 
+          (click)="clearResults()">
+          🧹 清除结果
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载指示器 -->
+  <div class="loading-indicator" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <span>处理中...</span>
+  </div>
+
+  <!-- 测试结果显示 -->
+  <div class="test-results" *ngIf="hasTestResults()">
+    <h3>📊 测试结果</h3>
+
+    <!-- 证书资格验证结果 -->
+    <div class="result-card" *ngIf="certificateTestResult">
+      <h4>🏥 证书资格验证结果</h4>
+      <div class="result-header">
+        <span [class]="certificateTestResult.success ? 'result-success' : 'result-error'">
+          {{ certificateTestResult.success ? '✅ 成功' : '❌ 失败' }}
+        </span>
+        <span class="result-time">{{ certificateTestResult.timestamp | date:'medium' }}</span>
+      </div>
+      
+      <div class="result-details">
+        <div class="detail-item">
+          <strong>保单号:</strong> {{ certificateTestResult.policyNumber }}
+        </div>
+        
+        <div *ngIf="certificateTestResult.success && certificateTestResult.data" class="detail-item">
+          <strong>API响应:</strong>
+          <pre class="json-display">{{ certificateTestResult.data | json }}</pre>
+        </div>
+        
+        <div *ngIf="!certificateTestResult.success" class="detail-item error">
+          <strong>错误信息:</strong> {{ certificateTestResult.error }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 其他测试结果 -->
+    <div class="result-card" *ngFor="let result of getTestResultEntries()">
+      <h4>{{ getTestResultTitle(result.key) }}</h4>
+      <div class="result-header">
+        <span [class]="result.value?.success ? 'result-success' : 'result-error'">
+          {{ result.value?.success ? '✅ 成功' : '❌ 失败' }}
+        </span>
+        <span class="result-time">{{ result.value?.timestamp | date:'medium' }}</span>
+      </div>
+      
+      <div class="result-details">
+        <div *ngIf="result.value?.message" class="detail-item">
+          <strong>消息:</strong> {{ result.value.message }}
+        </div>
+        
+        <div *ngIf="result.value?.data" class="detail-item">
+          <strong>数据:</strong>
+          <pre class="json-display">{{ result.value.data | json }}</pre>
+        </div>
+        
+        <div *ngIf="result.value?.error" class="detail-item error">
+          <strong>错误:</strong> {{ result.value.error }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使用说明 -->
+  <div class="usage-guide">
+    <h3>📖 使用说明</h3>
+    <div class="guide-content">
+      <ol>
+        <li><strong>检查状态:</strong> 首先查看"Host数据状态"和"API凭据详情"确认数据是否正确获取</li>
+        <li><strong>刷新数据:</strong> 如果数据不完整，点击"刷新Host数据"重新获取</li>
+        <li><strong>测试凭据:</strong> 点击"测试凭据获取"验证能否从Host获取API凭据</li>
+        <li><strong>测试连接:</strong> 点击"测试API连接"验证API服务是否可用</li>
+        <li><strong>调用API:</strong> 输入保单号，点击"验证证书资格"测试你的原始API调用</li>
+        <li><strong>处理错误:</strong> 如果遇到401错误，点击"刷新API凭据"然后重试</li>
+        <li><strong>调试问题:</strong> 使用"显示调试信息"和"导出测试数据"来分析问题</li>
+      </ol>
+      
+      <div class="important-note">
+        <strong>⚠️ 重要提示:</strong>
+        <ul>
+          <li>确保Host应用已正确设置API凭据</li>
+          <li>检查浏览器控制台获取详细日志信息</li>
+          <li>如果API调用失败，检查网络连接和API服务状态</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

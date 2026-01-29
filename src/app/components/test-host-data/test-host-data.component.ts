@@ -1,243 +1,325 @@
-import { Component, OnInit } from '@angular/core';
-import { HostDataMixin } from '../../mixins/host-data.mixin';
-import { HostDataService, HostData } from '../../services/host-data.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HostDataService, ApiCredentials } from '../../services/host-data.service';
+import { AuthenticatedApiService } from '../../services/authenticated-api.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-test-host-data',
-  template: `
-    <div class="test-host-data">
-      <h2>🧪 MFE Host Data 测试页面</h2>
-      
-      <div class="data-section">
-        <h3>📨 接收到的 Host 数据</h3>
-        <div class="data-display">
-          <pre>{{ hostData | json }}</pre>
-        </div>
-      </div>
-
-      <div class="parsed-data" *ngIf="hostData && getObjectKeys(hostData).length > 0">
-        <h3>📊 解析后的数据</h3>
-        <div class="data-item" *ngIf="getUserId()">
-          <strong>用户 ID:</strong> {{ getUserId() }}
-        </div>
-        <div class="data-item" *ngIf="getUserProfile()">
-          <strong>用户配置文件:</strong> {{ getUserProfile() | json }}
-        </div>
-        <div class="data-item" *ngIf="getClaimType()">
-          <strong>声明类型:</strong> {{ getClaimType() }}
-        </div>
-        <div class="data-item">
-          <strong>语言:</strong> {{ getLanguage() }}
-        </div>
-        <div class="data-item">
-          <strong>欢迎消息:</strong> {{ getWelcomeMessage() }}
-        </div>
-      </div>
-
-      <div class="debug-section">
-        <h3>🔍 调试信息</h3>
-        <button (click)="testParameterReceiving()" class="test-btn">
-          🧪 测试参数接收
-        </button>
-        <button (click)="simulateHostData()" class="test-btn">
-          🎭 模拟 Host 数据
-        </button>
-        <button (click)="disablePeriodicCheck()" class="test-btn">
-          ⏸️ 禁用定期检查
-        </button>
-        <button (click)="enablePeriodicCheck()" class="test-btn">
-          ▶️ 启用定期检查
-        </button>
-        <div class="debug-output">
-          <pre>{{ debugOutput }}</pre>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .test-host-data {
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    .data-section, .parsed-data, .debug-section {
-      margin: 20px 0;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-    
-    .data-display {
-      background: #f5f5f5;
-      padding: 10px;
-      border-radius: 3px;
-      overflow-x: auto;
-    }
-    
-    .data-item {
-      margin: 10px 0;
-      padding: 5px;
-      background: #f9f9f9;
-      border-left: 3px solid #007bff;
-    }
-    
-    .test-btn {
-      margin: 5px;
-      padding: 10px 15px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .test-btn:hover {
-      background: #0056b3;
-    }
-    
-    .debug-output {
-      background: #000;
-      color: #0f0;
-      padding: 10px;
-      border-radius: 3px;
-      font-family: monospace;
-      font-size: 12px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    
-    pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-  `]
+  templateUrl: './test-host-data.component.html',
+  styleUrls: ['./test-host-data.component.scss']
 })
-export class TestHostDataComponent extends HostDataMixin implements OnInit {
-  debugOutput: string = '';
+export class TestHostDataComponent implements OnInit, OnDestroy {
+  
+  // 数据状态
+  hostData: any = {};
+  apiCredentials: ApiCredentials | null = null;
+  isLoading = false;
+  
+  // API测试结果
+  apiTestResults: {
+    credentialsTest?: any;
+    connectionTest?: any;
+    refreshTest?: any;
+    [key: string]: any;
+  } = {};
+  certificateTestResult: any = null;
+  
+  // 订阅
+  private hostDataSubscription?: Subscription;
+  
+  // 测试用的保单号
+  testPolicyNumber = 'POLICY123456';
 
-  constructor(hostDataService: HostDataService) {
-    super(hostDataService);
+  constructor(
+    private hostDataService: HostDataService,
+    private authenticatedApiService: AuthenticatedApiService
+  ) {}
+
+  ngOnInit() {
+    console.log('🧪 测试组件初始化');
+    
+    // 订阅Host数据变化
+    this.hostDataSubscription = this.hostDataService.hostData$.subscribe(data => {
+      console.log('📨 收到Host数据更新:', data);
+      this.hostData = data;
+      this.apiCredentials = data.apiCredentials || null;
+    });
+    
+    // 初始化时获取当前数据
+    this.refreshHostData();
+  }
+
+  ngOnDestroy() {
+    if (this.hostDataSubscription) {
+      this.hostDataSubscription.unsubscribe();
+    }
   }
 
   /**
-   * 获取对象键数组（用于模板）
+   * 刷新Host数据
+   */
+  refreshHostData() {
+    console.log('🔄 刷新Host数据...');
+    this.hostDataService.refreshHostData();
+    this.hostData = this.hostDataService.getHostData();
+    this.apiCredentials = this.hostDataService.getApiCredentials();
+  }
+
+  /**
+   * 测试API凭据获取
+   */
+  async testApiCredentials() {
+    this.isLoading = true;
+    try {
+      console.log('🔑 测试API凭据获取...');
+      
+      const credentials = await this.hostDataService.getApiCredentialsFromHost();
+      
+      this.apiTestResults.credentialsTest = {
+        success: !!credentials,
+        data: credentials,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('📊 API凭据测试结果:', this.apiTestResults.credentialsTest);
+      
+    } catch (error) {
+      console.error('❌ API凭据测试失败:', error);
+      this.apiTestResults.credentialsTest = {
+        success: false,
+        error: error,
+        timestamp: new Date().toISOString()
+      };
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 测试API连接
+   */
+  async testApiConnection() {
+    this.isLoading = true;
+    try {
+      console.log('🌐 测试API连接...');
+      
+      const result = await this.authenticatedApiService.testApiConnection();
+      
+      this.apiTestResults.connectionTest = {
+        ...result,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('📊 API连接测试结果:', this.apiTestResults.connectionTest);
+      
+    } catch (error) {
+      console.error('❌ API连接测试失败:', error);
+      this.apiTestResults.connectionTest = {
+        success: false,
+        message: `连接测试失败: ${error}`,
+        error: error,
+        timestamp: new Date().toISOString()
+      };
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 测试证书资格验证API - 这是你的原始API调用
+   */
+  async testCertificateEligibility() {
+    this.isLoading = true;
+    try {
+      console.log('🏥 测试证书资格验证API...');
+      console.log('📋 使用保单号:', this.testPolicyNumber);
+      
+      const result = await this.authenticatedApiService.verifyCertEligibility(this.testPolicyNumber);
+      
+      this.certificateTestResult = {
+        success: true,
+        data: result,
+        policyNumber: this.testPolicyNumber,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('✅ 证书资格验证成功:', this.certificateTestResult);
+      
+    } catch (error) {
+      console.error('❌ 证书资格验证失败:', error);
+      
+      this.certificateTestResult = {
+        success: false,
+        error: error instanceof Error ? error.message : '未知错误',
+        details: error,
+        policyNumber: this.testPolicyNumber,
+        timestamp: new Date().toISOString()
+      };
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 刷新API凭据
+   */
+  async refreshApiCredentials() {
+    this.isLoading = true;
+    try {
+      console.log('🔄 刷新API凭据...');
+      
+      const refreshed = await this.hostDataService.refreshApiCredentialsFromHost();
+      
+      this.apiTestResults.refreshTest = {
+        success: !!refreshed,
+        data: refreshed,
+        timestamp: new Date().toISOString()
+      };
+      
+      if (refreshed) {
+        console.log('✅ API凭据刷新成功');
+        this.apiCredentials = refreshed;
+      } else {
+        console.warn('⚠️ API凭据刷新失败');
+      }
+      
+    } catch (error) {
+      console.error('❌ 刷新API凭据失败:', error);
+      this.apiTestResults.refreshTest = {
+        success: false,
+        error: error,
+        timestamp: new Date().toISOString()
+      };
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * 清除测试结果
+   */
+  clearResults() {
+    this.apiTestResults = {};
+    this.certificateTestResult = null;
+    console.log('🧹 测试结果已清除');
+  }
+
+  /**
+   * 获取Host数据状态摘要
+   */
+  getHostDataSummary() {
+    return {
+      hasUserId: !!this.hostData.userId,
+      hasUserProfile: !!this.hostData.userProfile,
+      hasApiCredentials: !!this.hostData.apiCredentials,
+      hasSessionData: !!this.hostData.sessionData,
+      totalKeys: Object.keys(this.hostData).length
+    };
+  }
+
+  /**
+   * 获取API凭据状态摘要
+   */
+  getApiCredentialsSummary() {
+    if (!this.apiCredentials) {
+      return {
+        available: false,
+        hasAccessToken: false,
+        hasXApiKey: false,
+        hasBaseUrl: false
+      };
+    }
+
+    return {
+      available: true,
+      hasAccessToken: !!this.apiCredentials.accessToken,
+      hasXApiKey: !!this.apiCredentials.xApiKey,
+      hasBaseUrl: !!this.apiCredentials.baseUrlBFF,
+      tokenExpiry: this.apiCredentials.tokenExpiry
+    };
+  }
+
+  /**
+   * 导出测试数据为JSON
+   */
+  exportTestData() {
+    const exportData = {
+      timestamp: new Date().toISOString(),
+      hostData: this.hostData,
+      apiCredentials: this.apiCredentials,
+      apiTestResults: this.apiTestResults,
+      certificateTestResult: this.certificateTestResult,
+      summary: {
+        hostData: this.getHostDataSummary(),
+        apiCredentials: this.getApiCredentialsSummary()
+      }
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mfe-api-test-${Date.now()}.json`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+    console.log('📁 测试数据已导出');
+  }
+
+  /**
+   * 显示详细的调试信息
+   */
+  showDebugInfo() {
+    const debugInfo = {
+      hostData: this.hostData,
+      apiCredentials: this.apiCredentials,
+      testResults: this.apiTestResults,
+      certificateResult: this.certificateTestResult,
+      windowData: {
+        hostSharedData: (window as any).hostSharedData,
+        getMfeData: typeof (window as any).getMfeData,
+        getMfeApiCredentials: typeof (window as any).getMfeApiCredentials,
+        refreshMfeApiCredentials: typeof (window as any).refreshMfeApiCredentials
+      }
+    };
+
+    console.log('🐛 详细调试信息:', debugInfo);
+    alert('详细调试信息已输出到控制台，请按F12查看');
+  }
+
+  /**
+   * 获取测试结果标题
+   */
+  getTestResultTitle(key: string): string {
+    const titleMap: { [key: string]: string } = {
+      'credentialsTest': '🔑 API凭据获取测试',
+      'connectionTest': '🌐 API连接测试',
+      'refreshTest': '🔄 API凭据刷新测试'
+    };
+    
+    return titleMap[key] || `📊 ${key} 测试`;
+  }
+
+  /**
+   * 获取Object.keys用于模板
    */
   getObjectKeys(obj: any): string[] {
     return Object.keys(obj || {});
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.addDebugLog('🚀 TestHostDataComponent 初始化完成');
+  /**
+   * 检查是否有测试结果
+   */
+  hasTestResults(): boolean {
+    return Object.keys(this.apiTestResults).length > 0 || !!this.certificateTestResult;
   }
 
   /**
-   * Host 数据更新时的处理
+   * 获取测试结果条目
    */
-  protected override onHostDataUpdated(data: HostData): void {
-    super.onHostDataUpdated(data);
-    this.addDebugLog(`🔄 Host 数据更新: ${JSON.stringify(data, null, 2)}`);
-  }
-
-  /**
-   * 获取欢迎消息
-   */
-  getWelcomeMessage(): string {
-    const name = this.hostData.userProfile?.name || 'User';
-    const language = this.getLanguage();
-    
-    if (language === 'km') {
-      return `ស្វាគមន៍ ${name}`;
-    } else {
-      return `Welcome ${name}`;
-    }
-  }
-
-  /**
-   * 测试参数接收
-   */
-  testParameterReceiving(): void {
-    this.addDebugLog('🧪 开始测试 MFE 参数接收...');
-    
-    // 测试 1: 检查服务状态
-    this.addDebugLog(`Host Data Service: ${this.hostDataService ? '✅ 正常' : '❌ 未找到'}`);
-    
-    // 测试 2: 获取当前数据
-    const currentData = this.hostDataService.getHostData();
-    this.addDebugLog(`当前 Host 数据: ${JSON.stringify(currentData, null, 2)}`);
-    
-    // 测试 3: 检查具体字段
-    this.addDebugLog(`用户 ID: ${this.hostDataService.getUserId()}`);
-    this.addDebugLog(`用户配置文件: ${JSON.stringify(this.hostDataService.getUserProfile())}`);
-    this.addDebugLog(`声明类型: ${this.hostDataService.getClaimType()}`);
-    this.addDebugLog(`语言: ${this.hostDataService.getLanguage()}`);
-    
-    // 测试 4: 检查 Window 对象
-    this.addDebugLog(`Window hostSharedData: ${JSON.stringify((window as any).hostSharedData)}`);
-    this.addDebugLog(`Window getMfeData: ${typeof (window as any).getMfeData}`);
-    this.addDebugLog(`Window subscribeMfeData: ${typeof (window as any).subscribeMfeData}`);
-    
-    // 测试 5: 检查 URL 参数
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlParamsObj: any = {};
-    urlParams.forEach((value, key) => {
-      urlParamsObj[key] = value;
-    });
-    this.addDebugLog(`URL 参数: ${JSON.stringify(urlParamsObj)}`);
-  }
-
-  /**
-   * 模拟 Host 数据
-   */
-  simulateHostData(): void {
-    this.addDebugLog('🎭 模拟 Host 数据...');
-    
-    // 模拟在 Window 对象上设置数据
-    (window as any).hostSharedData = {
-      userId: 'test-user-123',
-      userProfile: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1234567890',
-        userId: 'test-user-123',
-        language: 'en'
-      },
-      claimType: 'medical',
-      language: 'en',
-      sessionData: {
-        isLoggedIn: true,
-        token: 'mock-token-123'
-      },
-      pageContext: 'test-page'
-    };
-    
-    this.addDebugLog('✅ 模拟数据已设置到 Window.hostSharedData');
-    this.addDebugLog('⏳ 等待服务检测数据变化...');
-  }
-
-  /**
-   * 禁用定期检查
-   */
-  disablePeriodicCheck(): void {
-    this.hostDataService.disablePeriodicCheck();
-    this.addDebugLog('⏸️ 定期检查已禁用');
-  }
-
-  /**
-   * 启用定期检查
-   */
-  enablePeriodicCheck(): void {
-    this.hostDataService.enablePeriodicCheck(5000); // 5秒间隔
-    this.addDebugLog('▶️ 定期检查已启用（每5秒）');
-  }
-
-  /**
-   * 添加调试日志
-   */
-  private addDebugLog(message: string): void {
-    const timestamp = new Date().toLocaleTimeString();
-    this.debugOutput += `[${timestamp}] ${message}\n`;
-    console.log(message);
+  getTestResultEntries(): Array<{key: string, value: any}> {
+    return Object.entries(this.apiTestResults).map(([key, value]) => ({key, value}));
   }
 }

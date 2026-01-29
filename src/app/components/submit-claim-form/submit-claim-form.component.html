@@ -1,4 +1,23 @@
 <div class="submit-form-page">
+  <!-- 添加CSS动画样式 -->
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .api-test-btn:hover {
+      opacity: 0.8;
+      transform: translateY(-1px);
+      transition: all 0.2s ease;
+    }
+    
+    .api-test-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+  </style>
+
   <!-- Success Page -->
   <div class="success-page" *ngIf="showSuccessPage">
     <div class="success-header">
@@ -173,6 +192,118 @@
           </svg>
           Edit bank account
         </button>
+
+        <!-- API测试区域 -->
+        <div class="api-test-section" style="margin-top: 2rem; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
+          <h2 class="section-title" style="color: #EC6453; font-size: 1.1rem; margin-bottom: 1rem;">🔧 API集成测试</h2>
+          <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+            这个区域用于测试从Host应用获取access token并调用API的功能。
+          </p>
+
+          <!-- API状态显示 -->
+          <div class="api-status" *ngIf="apiCredentialsStatus" style="margin-bottom: 1rem; padding: 0.5rem; background: white; border-radius: 4px; font-size: 0.85rem;">
+            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 600;">API凭据状态:</span>
+              <span [style.color]="apiCredentialsStatus.available ? '#28a745' : '#dc3545'" style="margin-left: 0.5rem;">
+                {{ apiCredentialsStatus.available ? '✅ 可用' : '❌ 不可用' }}
+              </span>
+            </div>
+            <div style="font-size: 0.8rem; color: #666;">
+              <div>Access Token: {{ apiCredentialsStatus.hasAccessToken ? '✅' : '❌' }}</div>
+              <div>X-API-Key: {{ apiCredentialsStatus.hasXApiKey ? '✅' : '❌' }}</div>
+              <div>Base URL: {{ apiCredentialsStatus.hasBaseUrl ? '✅' : '❌' }}</div>
+            </div>
+          </div>
+
+          <!-- API测试按钮组 -->
+          <div class="api-test-buttons" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+            <button 
+              class="api-test-btn" 
+              (click)="checkApiCredentialsStatus()"
+              [disabled]="isLoadingApiData"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #EC6453; background: white; color: #EC6453; border-radius: 4px; cursor: pointer;">
+              {{ isLoadingApiData ? '检查中...' : '检查凭据状态' }}
+            </button>
+
+            <button 
+              class="api-test-btn" 
+              (click)="testApiConnection()"
+              [disabled]="isLoadingApiData"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #EC6453; background: white; color: #EC6453; border-radius: 4px; cursor: pointer;">
+              {{ isLoadingApiData ? '测试中...' : '测试API连接' }}
+            </button>
+
+            <button 
+              class="api-test-btn" 
+              (click)="verifyCertEligibility()"
+              [disabled]="isLoadingApiData"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #28a745; background: white; color: #28a745; border-radius: 4px; cursor: pointer;">
+              {{ isLoadingApiData ? '验证中...' : '验证证书资格' }}
+            </button>
+
+            <button 
+              class="api-test-btn" 
+              (click)="refreshApiCredentials()"
+              [disabled]="isLoadingApiData"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #ffc107; background: white; color: #ffc107; border-radius: 4px; cursor: pointer;">
+              {{ isLoadingApiData ? '刷新中...' : '刷新凭据' }}
+            </button>
+
+            <button 
+              class="api-test-btn" 
+              (click)="showApiDebugInfo()"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #6c757d; background: white; color: #6c757d; border-radius: 4px; cursor: pointer;">
+              调试信息
+            </button>
+
+            <button 
+              class="api-test-btn" 
+              (click)="resetApiStatus()"
+              style="padding: 0.5rem 1rem; font-size: 0.8rem; border: 1px solid #dc3545; background: white; color: #dc3545; border-radius: 4px; cursor: pointer;">
+              重置状态
+            </button>
+          </div>
+
+          <!-- 加载指示器 -->
+          <div *ngIf="isLoadingApiData" style="text-align: center; padding: 1rem; color: #EC6453;">
+            <div style="display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #EC6453; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="margin-left: 0.5rem;">处理中...</span>
+          </div>
+
+          <!-- API结果显示 -->
+          <div class="api-results" *ngIf="certificateEligibilityResult || apiTestResult" style="margin-top: 1rem; padding: 0.5rem; background: white; border-radius: 4px; font-size: 0.8rem;">
+            <div *ngIf="certificateEligibilityResult" style="margin-bottom: 0.5rem;">
+              <strong>证书资格验证结果:</strong>
+              <div [style.color]="certificateEligibilityResult.error ? '#dc3545' : '#28a745'">
+                {{ certificateEligibilityResult.error ? '❌ 失败' : '✅ 成功' }}
+              </div>
+              <div *ngIf="certificateEligibilityResult.message" style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">
+                {{ certificateEligibilityResult.message }}
+              </div>
+            </div>
+
+            <div *ngIf="apiTestResult" style="margin-bottom: 0.5rem;">
+              <strong>API连接测试结果:</strong>
+              <div [style.color]="apiTestResult.success ? '#28a745' : '#dc3545'">
+                {{ apiTestResult.success ? '✅ 成功' : '❌ 失败' }}
+              </div>
+              <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">
+                {{ apiTestResult.message }}
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用说明 -->
+          <div style="margin-top: 1rem; padding: 0.5rem; background: #e7f3ff; border-left: 3px solid #2196F3; font-size: 0.8rem;">
+            <strong>使用说明:</strong>
+            <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+              <li>首先点击"检查凭据状态"确认Host已传递API凭据</li>
+              <li>点击"验证证书资格"测试你的原始API调用</li>
+              <li>如果遇到401错误，点击"刷新凭据"</li>
+              <li>查看浏览器控制台获取详细日志信息</li>
+            </ol>
+          </div>
+        </div>
     </div>
 
     <!-- Step 3: Documents Upload -->
